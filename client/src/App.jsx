@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import IntroPage from './pages/IntroPage';
+import WorldHubPage from './pages/WorldHubPage';
+import OriginTower from './pages/OriginTower';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -29,8 +31,8 @@ export function App() {
         <Route path="/" element={<IntroPage />} />
 
         {/* World Sectors & Archives */}
-        <Route path="/hub" element={<RoutePlaceholder />} />
-        <Route path="/origin" element={<RoutePlaceholder />} />
+        <Route path="/hub" element={<WorldHubPage />} />
+        <Route path="/origin" element={<OriginTower />} />
         <Route path="/quests" element={<RoutePlaceholder />} />
         <Route path="/quests/:id" element={<RoutePlaceholder />} />
         <Route path="/journal" element={<RoutePlaceholder />} />

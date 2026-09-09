@@ -16,6 +16,7 @@ export function AppLayout({ children, hideNav = false }) {
 
   // Root intro screen ('/') presents an immersive full-canvas layout
   const isIntroPage = location.pathname === '/';
+  const isHubPage = location.pathname === '/hub';
   const shouldHideNav = hideNav || isIntroPage;
 
   return (
@@ -40,9 +41,10 @@ export function AppLayout({ children, hideNav = false }) {
         {/* Main Viewport */}
         <main
           className={clsx(
-            'flex-1 w-full min-h-screen transition-all duration-300',
-            !shouldHideNav && 'pt-16 md:ml-64 pb-20 md:pb-12 px-4 md:px-margin-safe',
-            shouldHideNav && 'p-0'
+            'flex-1 w-full transition-all duration-300',
+            shouldHideNav && 'p-0 min-h-screen',
+            !shouldHideNav && isHubPage && 'pt-16 md:ml-64 pb-16 md:pb-0 p-0 h-screen overflow-hidden',
+            !shouldHideNav && !isHubPage && 'min-h-screen pt-16 md:ml-64 pb-20 md:pb-12 px-4 md:px-margin-safe'
           )}
         >
           {children || <Outlet />}
