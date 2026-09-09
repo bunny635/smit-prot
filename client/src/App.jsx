@@ -7,6 +7,7 @@ import OriginTower from './pages/OriginTower';
 import ProjectArena from './pages/ProjectArena';
 import SkillMountain from './pages/SkillMountain';
 import QuestJournal from './pages/QuestJournal';
+import ForbiddenLab from './pages/ForbiddenLab';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -40,7 +41,7 @@ export function App() {
         <Route path="/quests/:id" element={<RoutePlaceholder />} />
         <Route path="/journal" element={<QuestJournal />} />
         <Route path="/skills" element={<SkillMountain />} />
-        <Route path="/lab" element={<RoutePlaceholder />} />
+        <Route path="/lab" element={<ForbiddenLab />} />
         <Route path="/memory" element={<RoutePlaceholder />} />
         <Route path="/education" element={<RoutePlaceholder />} />
         <Route path="/achievements" element={<RoutePlaceholder />} />
