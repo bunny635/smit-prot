@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   AETHELGARD DESIGN SYSTEM — GLOBAL STYLES
+   ========================================================================== */
+
+:root {
+  --color-abyss: #050505;
+  --color-background: #14140f;
+  --color-surface: #14140f;
+  --color-surface-bright: #3a3933;
+  --color-surface-container-lowest: #0f0e0a;
+  --color-surface-container-low: #1c1c16;
+  --color-surface-container: #20201a;
+  --color-surface-container-high: #2b2a24;
+  --color-surface-container-highest: #36352f;
+  --color-surface-variant: #36352f;
+  --color-on-background: #e6e2d9;
+  --color-on-surface: #e6e2d9;
+  --color-on-surface-variant: #d0c5af;
+  --color-outline: #99907c;
+  --color-outline-variant: #4d4635;
+  --color-primary: #f2ca50;
+  --color-primary-container: #d4af37;
+  --color-secondary: #e2c559;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-surface-tint: #e9c349;
+  --color-gold-glow: rgba(212, 175, 55, 0.15);
+  --color-gold-glow-active: rgba(212, 175, 55, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Box Sizing & Base Resets
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Inter', sans-serif;
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  background-color: var(--color-abyss);
+  color: var(--color-on-surface);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--color-abyss);
+  color: var(--color-on-surface);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   Selection Styling
+   -------------------------------------------------------------------------- */
+::selection {
+  background: rgba(242, 202, 80, 0.3);
+  color: #f2ca50;
+}
+
+::-moz-selection {
+  background: rgba(242, 202, 80, 0.3);
+  color: #f2ca50;
+}
+
+/* --------------------------------------------------------------------------
+   Custom Scrollbars
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090908;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.25);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(242, 202, 80, 0.5);
+  box-shadow: 0 0 10px rgba(242, 202, 80, 0.3);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.25) #090908;
+}
+
+/* --------------------------------------------------------------------------
+   Focus States (Accessible & Technical)
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 1px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 8px rgba(242, 202, 80, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Material Symbols
+   -------------------------------------------------------------------------- */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* --------------------------------------------------------------------------
+   Aethelgard Architectural Utilities
+   -------------------------------------------------------------------------- */
+.aethel-rim-border {
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.aethel-rim-border-active {
+  border: 1px solid rgba(242, 202, 80, 0.6);
+}
+
+.aethel-glow {
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.aethel-glass {
+  background-color: rgba(20, 20, 15, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Corner bracket accents */
+.corner-brackets {
+  position: relative;
+}
+
+.corner-brackets::before,
+.corner-brackets::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  border-color: var(--color-primary);
+  opacity: 0.7;
+}
+
+.corner-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.corner-brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* Subtle architectural grid background */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Noise overlay utility */
+.noise-texture {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --------------------------------------------------------------------------
+   Reduced Motion Support
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

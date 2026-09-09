@@ -1,0 +1,140 @@
+# ==========================================
+# SMIT QUEST - FINAL GITIGNORE
+# ==========================================
+
+# ------------------------------------------
+# Dependencies
+# ------------------------------------------
+node_modules/
+**/node_modules/
+
+# ------------------------------------------
+# Build / production output
+# ------------------------------------------
+dist/
+**/dist/
+build/
+**/build/
+
+# ------------------------------------------
+# Vite
+# ------------------------------------------
+.vite/
+**/.vite/
+
+# ------------------------------------------
+# Environment / secrets
+# ------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ------------------------------------------
+# Logs
+# ------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ------------------------------------------
+# OS generated files
+# ------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ------------------------------------------
+# IDE / editor
+# ------------------------------------------
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.history/
+
+# ------------------------------------------
+# Temporary / backup files
+# ------------------------------------------
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# ------------------------------------------
+# Cache
+# ------------------------------------------
+.cache/
+**/.cache/
+.parcel-cache/
+.eslintcache
+
+# ------------------------------------------
+# Test / coverage output
+# ------------------------------------------
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# ------------------------------------------
+# TypeScript generated cache
+# ------------------------------------------
+*.tsbuildinfo
+
+# ------------------------------------------
+# Local databases
+# ------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+
+# ------------------------------------------
+# Certificates / private keys
+# ------------------------------------------
+*.pem
+*.key
+
+# ==========================================
+# STITCH DESIGN FILES
+# DO NOT PUSH TO GITHUB
+# ==========================================
+
+# Extracted Stitch design archive
+stitch_smit_quest_design_system/
+
+# Stitch ZIP archive
+stitch_smit_quest_design_system.zip
+
+# Any future Stitch exports
+stitch/
+stitch_*/
+**/stitch/
+**/stitch_*/
+
+# ==========================================
+# DESIGN REFERENCES / LOCAL ASSETS
+# Keep these local unless explicitly needed
+# ==========================================
+
+# Local design exports
+figma-exports/
+design-exports/
+design-reference/
+design-references/
+
+# Local screenshots / recordings
+screenshots/
+recordings/
+
+# ==========================================
+# Generated / local development files
+# ==========================================
+
+*.local
+*.tmp
+*.temp

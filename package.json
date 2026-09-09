@@ -1,0 +1,23 @@
+{
+  "name": "smit-quest",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=client",
+    "build": "npm run build --workspace=client",
+    "preview": "npm run preview --workspace=client"
+  },
+  "keywords": [
+    "smit-quest",
+    "developer-portfolio",
+    "aethelgard",
+    "rpg",
+    "react",
+    "threejs"
+  ],
+  "author": "ARCHIVIST_01",
+  "license": "MIT"
+}
