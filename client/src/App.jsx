@@ -10,6 +10,7 @@ import QuestJournal from './pages/QuestJournal';
 import ForbiddenLab from './pages/ForbiddenLab';
 import MemoryValley from './pages/MemoryValley';
 import EducationConstellation from './pages/EducationConstellation';
+import AchievementGallery from './pages/AchievementGallery';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -46,7 +47,7 @@ export function App() {
         <Route path="/lab" element={<ForbiddenLab />} />
         <Route path="/memory" element={<MemoryValley />} />
         <Route path="/education" element={<EducationConstellation />} />
-        <Route path="/achievements" element={<RoutePlaceholder />} />
+        <Route path="/achievements" element={<AchievementGallery />} />
         <Route path="/console" element={<RoutePlaceholder />} />
         <Route path="/void" element={<RoutePlaceholder />} />
         <Route path="/portal" element={<RoutePlaceholder />} />
