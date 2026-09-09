@@ -8,6 +8,7 @@ import ProjectArena from './pages/ProjectArena';
 import SkillMountain from './pages/SkillMountain';
 import QuestJournal from './pages/QuestJournal';
 import ForbiddenLab from './pages/ForbiddenLab';
+import MemoryValley from './pages/MemoryValley';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -42,7 +43,7 @@ export function App() {
         <Route path="/journal" element={<QuestJournal />} />
         <Route path="/skills" element={<SkillMountain />} />
         <Route path="/lab" element={<ForbiddenLab />} />
-        <Route path="/memory" element={<RoutePlaceholder />} />
+        <Route path="/memory" element={<MemoryValley />} />
         <Route path="/education" element={<RoutePlaceholder />} />
         <Route path="/achievements" element={<RoutePlaceholder />} />
         <Route path="/console" element={<RoutePlaceholder />} />
