@@ -38,7 +38,7 @@ function AmbientDust({ count = 60, reducedMotion = false }) {
   });
 
   return (
-    <points ref={pointsRef}>
+    <points key={count} ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
