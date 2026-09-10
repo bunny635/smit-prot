@@ -121,6 +121,7 @@ stitch_*/
 # Keep these local unless explicitly needed
 # ==========================================
 
+
 # Local design exports
 figma-exports/
 design-exports/

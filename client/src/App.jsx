@@ -14,6 +14,7 @@ import AchievementGallery from './pages/AchievementGallery';
 import SystemConsole from './pages/SystemConsole';
 import TheVoid from './pages/TheVoid';
 import FinalPortal from './pages/FinalPortal';
+import QuestDetail from './pages/QuestDetail';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -44,7 +45,7 @@ export function App() {
         <Route path="/hub" element={<WorldHubPage />} />
         <Route path="/origin" element={<OriginTower />} />
         <Route path="/quests" element={<ProjectArena />} />
-        <Route path="/quests/:id" element={<RoutePlaceholder />} />
+        <Route path="/quests/:id" element={<QuestDetail />} />
         <Route path="/journal" element={<QuestJournal />} />
         <Route path="/skills" element={<SkillMountain />} />
         <Route path="/lab" element={<ForbiddenLab />} />
