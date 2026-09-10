@@ -12,6 +12,7 @@ import MemoryValley from './pages/MemoryValley';
 import EducationConstellation from './pages/EducationConstellation';
 import AchievementGallery from './pages/AchievementGallery';
 import SystemConsole from './pages/SystemConsole';
+import TheVoid from './pages/TheVoid';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -50,7 +51,7 @@ export function App() {
         <Route path="/education" element={<EducationConstellation />} />
         <Route path="/achievements" element={<AchievementGallery />} />
         <Route path="/console" element={<SystemConsole />} />
-        <Route path="/void" element={<RoutePlaceholder />} />
+        <Route path="/void" element={<TheVoid />} />
         <Route path="/portal" element={<RoutePlaceholder />} />
 
         {/* Fallback */}

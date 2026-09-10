@@ -1,7 +1,7 @@
 # ==========================================
 # SMIT QUEST - FINAL GITIGNORE
 # ==========================================
-
+.gitignore
 # ------------------------------------------
 # Dependencies
 # ------------------------------------------
@@ -138,3 +138,14 @@ recordings/
 *.local
 *.tmp
 *.temp
+
+void_375x667.png
+void_390x844.png
+void_768x1024.png
+void_1440x900.png
+void_1920.png
+void_desktop_1920x1080.png
+void_desktop_entire.png
+void_desktop_full.png
+
+console_768x1024.png
