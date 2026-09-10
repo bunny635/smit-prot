@@ -13,6 +13,7 @@ import EducationConstellation from './pages/EducationConstellation';
 import AchievementGallery from './pages/AchievementGallery';
 import SystemConsole from './pages/SystemConsole';
 import TheVoid from './pages/TheVoid';
+import FinalPortal from './pages/FinalPortal';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -52,7 +53,7 @@ export function App() {
         <Route path="/achievements" element={<AchievementGallery />} />
         <Route path="/console" element={<SystemConsole />} />
         <Route path="/void" element={<TheVoid />} />
-        <Route path="/portal" element={<RoutePlaceholder />} />
+        <Route path="/portal" element={<FinalPortal />} />
 
         {/* Fallback */}
         <Route path="*" element={<RoutePlaceholder />} />
