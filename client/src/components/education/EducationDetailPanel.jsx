@@ -194,7 +194,7 @@ export function EducationDetailPanel({
               {node.achievements && (
                 <div className="p-4 bg-surface-container-lowest/60 border border-outline-variant/25 rounded-DEFAULT flex flex-col gap-2">
                   <div className="font-meta-technical text-[10px] text-outline-variant uppercase tracking-widest font-bold">
-                    VERIFIED_COMMENDATIONS // CITATIONS
+                    PRACTICAL_COMPETENCIES // HIGHLIGHTS
                   </div>
                   <ul className="flex flex-col gap-1.5 font-meta-technical text-[11px] text-on-surface-variant">
                     {node.achievements.map((ach, idx) => (

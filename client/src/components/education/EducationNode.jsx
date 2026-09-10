@@ -28,15 +28,12 @@ export function EducationNode({
     }
   };
 
-  const isDegree = node.level === 'MASTER_LEVEL' || node.level === 'BACHELOR_LEVEL';
-  const isCert = node.level === 'CERTIFICATION';
-
   return (
     <motion.article
       role="button"
       tabIndex={0}
       aria-pressed={isSelected}
-      aria-label={`Academic Node: ${node.title} at ${node.institution}`}
+      aria-label={`Knowledge Node: ${node.title} // ${node.institution}`}
       onClick={() => onSelect && onSelect(node)}
       onKeyDown={handleKeyDown}
       whileHover={reducedMotion ? {} : { y: -4 }}
@@ -121,7 +118,7 @@ export function EducationNode({
           <span className="material-symbols-outlined text-[13px]">
             {node.verificationState?.includes('VERIFIED') ? 'verified' : 'history_toggle_off'}
           </span>
-          <span>{node.verificationState?.includes('VERIFIED') ? 'VERIFIED' : 'ARCHIVAL'}</span>
+          <span>{node.verificationState?.includes('VERIFIED') ? 'VERIFIED' : 'PORTFOLIO'}</span>
         </span>
       </div>
     </motion.article>

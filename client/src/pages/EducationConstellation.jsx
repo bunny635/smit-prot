@@ -28,19 +28,19 @@ export function EducationConstellation() {
   }, []);
 
   // Compute category counts dynamically from EDUCATION_DATA
-  const { categoryCounts, degreesCount, certificationsCount, specializationsCount } =
+  const { categoryCounts, foundationsCount, architectureCount, specializationsCount } =
     useMemo(() => {
       const counts = {
-        DEGREES: 0,
-        CERTIFICATIONS: 0,
+        FOUNDATIONS: 0,
+        ARCHITECTURE: 0,
         SPECIALIZATIONS: 0,
       };
 
       EDUCATION_DATA.forEach((item) => {
-        if (item.level === 'MASTER_LEVEL' || item.level === 'BACHELOR_LEVEL') {
-          counts.DEGREES += 1;
-        } else if (item.level === 'CERTIFICATION') {
-          counts.CERTIFICATIONS += 1;
+        if (item.level === 'FOUNDATION') {
+          counts.FOUNDATIONS += 1;
+        } else if (item.level === 'ARCHITECTURE') {
+          counts.ARCHITECTURE += 1;
         } else {
           counts.SPECIALIZATIONS += 1;
         }
@@ -48,8 +48,8 @@ export function EducationConstellation() {
 
       return {
         categoryCounts: counts,
-        degreesCount: counts.DEGREES,
-        certificationsCount: counts.CERTIFICATIONS,
+        foundationsCount: counts.FOUNDATIONS,
+        architectureCount: counts.ARCHITECTURE,
         specializationsCount: counts.SPECIALIZATIONS,
       };
     }, []);
@@ -59,14 +59,14 @@ export function EducationConstellation() {
     if (selectedCategory === 'ALL') return EDUCATION_DATA;
 
     return EDUCATION_DATA.filter((node) => {
-      if (selectedCategory === 'DEGREES') {
-        return node.level === 'MASTER_LEVEL' || node.level === 'BACHELOR_LEVEL';
+      if (selectedCategory === 'FOUNDATIONS') {
+        return node.level === 'FOUNDATION';
       }
-      if (selectedCategory === 'CERTIFICATIONS') {
-        return node.level === 'CERTIFICATION';
+      if (selectedCategory === 'ARCHITECTURE') {
+        return node.level === 'ARCHITECTURE';
       }
       if (selectedCategory === 'SPECIALIZATIONS') {
-        return node.level === 'SPECIALIZATION' || node.level === 'FOUNDATION';
+        return node.level === 'SPECIALIZATION';
       }
       return true;
     });
@@ -95,8 +95,8 @@ export function EducationConstellation() {
           ========================================================================= */}
       <EducationHero
         totalRecords={EDUCATION_DATA.length}
-        degreesCount={degreesCount}
-        certificationsCount={certificationsCount}
+        foundationsCount={foundationsCount}
+        architectureCount={architectureCount}
         specializationsCount={specializationsCount}
         reducedMotion={prefersReducedMotion}
       />

@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { name: 'WORLD HUB', path: '/hub', icon: 'hub' },
   { name: 'ORIGIN TOWER', path: '/origin', icon: 'apartment' },
   { name: 'QUEST ARENA', path: '/quests', icon: 'military_tech' },
+  { name: 'INVENTORY VAULT', path: '/inventory', icon: 'backpack' },
   { name: 'SKILL TREE', path: '/skills', icon: 'account_tree' },
   { name: 'MISSION LOG', path: '/journal', icon: 'auto_stories' },
   { name: 'FORBIDDEN LAB', path: '/lab', icon: 'biotech' },

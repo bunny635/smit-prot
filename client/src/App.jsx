@@ -15,6 +15,7 @@ import SystemConsole from './pages/SystemConsole';
 import TheVoid from './pages/TheVoid';
 import FinalPortal from './pages/FinalPortal';
 import QuestDetail from './pages/QuestDetail';
+import InventoryVault from './pages/InventoryVault';
 import RoutePlaceholder from './pages/RoutePlaceholder';
 import { usePlayer } from './context/PlayerContext';
 
@@ -46,6 +47,7 @@ export function App() {
         <Route path="/origin" element={<OriginTower />} />
         <Route path="/quests" element={<ProjectArena />} />
         <Route path="/quests/:id" element={<QuestDetail />} />
+        <Route path="/inventory" element={<InventoryVault />} />
         <Route path="/journal" element={<QuestJournal />} />
         <Route path="/skills" element={<SkillMountain />} />
         <Route path="/lab" element={<ForbiddenLab />} />

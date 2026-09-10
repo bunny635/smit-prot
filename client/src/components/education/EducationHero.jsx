@@ -11,8 +11,8 @@ import { motion } from 'framer-motion';
  */
 export function EducationHero({
   totalRecords = 5,
-  degreesCount = 2,
-  certificationsCount = 1,
+  foundationsCount = 2,
+  architectureCount = 1,
   specializationsCount = 2,
   reducedMotion = false,
 }) {
@@ -59,7 +59,7 @@ export function EducationHero({
 
           <div className="border-l-2 border-primary/40 pl-4 mt-5">
             <p className="font-sans text-[13px] sm:text-[14px] text-on-surface-variant/90 leading-relaxed max-w-2xl">
-              Accessing verified educational nodes and knowledge pathways. Neural pathways established to foundational computing degree repositories, cloud architectures, and specialized client-side systems modules.
+              Accessing foundational knowledge pathways and curriculum repositories. Pathways established to core computing foundations, cloud systems architecture, and specialized client-side engineering modules.
             </p>
           </div>
         </div>
@@ -72,13 +72,13 @@ export function EducationHero({
           </div>
 
           <div className="px-3.5 py-2 bg-surface-container-lowest/80 border border-outline-variant/40 rounded-DEFAULT text-on-surface">
-            <span className="text-[9px] text-outline-variant uppercase tracking-widest block">DEGREE TRACKS</span>
-            <span className="text-on-surface font-bold text-sm">{degreesCount} TRACKS</span>
+            <span className="text-[9px] text-outline-variant uppercase tracking-widest block">FOUNDATIONS</span>
+            <span className="text-on-surface font-bold text-sm">{foundationsCount} TRACKS</span>
           </div>
 
           <div className="px-3.5 py-2 bg-surface-container-lowest/80 border border-outline-variant/40 rounded-DEFAULT text-on-surface">
-            <span className="text-[9px] text-outline-variant uppercase tracking-widest block">CERTIFICATIONS</span>
-            <span className="text-primary-fixed font-bold text-sm">{certificationsCount} CREDENTIAL</span>
+            <span className="text-[9px] text-outline-variant uppercase tracking-widest block">ARCHITECTURE</span>
+            <span className="text-primary-fixed font-bold text-sm">{architectureCount} MODULE</span>
           </div>
 
           <div className="px-3.5 py-2 bg-surface-container-lowest/80 border border-outline-variant/40 rounded-DEFAULT text-on-surface">
@@ -92,9 +92,9 @@ export function EducationHero({
       <div className="mt-6 px-4 py-2.5 bg-surface-container-lowest/70 border border-outline-variant/30 rounded-DEFAULT flex items-center justify-between gap-4 font-meta-technical text-[10px] text-on-surface-variant">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-[15px]">verified_user</span>
-          <span>ARCHIVAL TRUTHFULNESS: Academic registry grounded in core computer science curriculum and verified technical credentials.</span>
+          <span>ARCHIVAL TRUTHFULNESS: Knowledge repositories reflect portfolio architectures, continuous study, and foundational computing curriculum. Formal academic credentials and external certifications await official verification upload.</span>
         </div>
-        <span className="hidden sm:inline text-primary/80 font-mono tracking-wider">SEC-07 // VERIFIED_MATRIX</span>
+        <span className="hidden sm:inline text-primary/80 font-mono tracking-wider">SEC-07 // KNOWLEDGE_MATRIX</span>
       </div>
     </header>
   );

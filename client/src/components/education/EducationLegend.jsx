@@ -60,12 +60,12 @@ export function EducationLegend({
       <div className="flex flex-wrap items-center gap-4 text-outline font-meta-technical text-[10px] tracking-wider uppercase border-t md:border-t-0 md:border-l border-outline-variant/30 pt-3 md:pt-0 md:pl-4">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_6px_#f2ca50]" />
-          <span className="text-on-surface">DEGREE TRACK</span>
+          <span className="text-on-surface">FOUNDATIONS</span>
         </div>
 
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_6px_#d4af37]" />
-          <span className="text-on-surface">CERTIFICATION</span>
+          <span className="text-on-surface">ARCHITECTURE</span>
         </div>
 
         <div className="flex items-center gap-1.5">

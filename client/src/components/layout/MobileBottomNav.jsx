@@ -5,6 +5,7 @@ import clsx from 'clsx';
 const MOBILE_DESTINATIONS = [
   { name: 'HUB', path: '/hub', icon: 'hub' },
   { name: 'QUESTS', path: '/quests', icon: 'military_tech' },
+  { name: 'INVENTORY', path: '/inventory', icon: 'backpack' },
   { name: 'SKILLS', path: '/skills', icon: 'account_tree' },
   { name: 'ORIGIN', path: '/origin', icon: 'person' },
   { name: 'CONSOLE', path: '/console', icon: 'terminal' },

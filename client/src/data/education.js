@@ -1,16 +1,15 @@
 /**
  * education.js — SMIT QUEST Education Constellation & Academic Registry
- * Single source of truth for developer academic foundations, knowledge pathways,
- * and educational credentials.
+ * Single source of truth for developer foundational knowledge pathways,
+ * curriculum domains, and technical specializations.
  *
  * NOTE ON CONTENT TRUTHFULNESS & ACADEMIC RECORDS:
  * Hard Rule: No university degrees, schools, or academic marks are fabricated.
- * Formal university records await official transcript upload and verification.
- * The records below represent the foundational computer science and systems engineering
- * curriculum, continuous technical specializations, and professional certifications
- * grounded in the developer's verified skills and project architectures.
- * Prototype specimen nodes derived from the Stitch design archive are explicitly marked
- * as 'SPECIMEN // PENDING TRANSCRIPT VERIFICATION'.
+ * Formal university records and external certifications await official verification upload.
+ * The records below represent self-directed computer science foundations, systems engineering
+ * curriculum, continuous technical specializations, and portfolio-derived architectures
+ * grounded in verified codebase implementations.
+ * No record is marked as an externally verified credential.
  */
 
 export const EDUCATION_DATA = [
@@ -18,20 +17,17 @@ export const EDUCATION_DATA = [
     id: 'ed-001',
     nodeCode: 'ED_NODE_01',
     title: 'Computer Science & Distributed Systems',
-    institution: 'Foundational Academia // Systems Core',
-    qualification: 'Advanced Degree Track',
+    institution: 'Independent Study // Systems Core',
+    qualification: 'Foundational Curriculum Study',
     field: 'Computer Science & Software Architecture',
-    level: 'MASTER_LEVEL',
+    level: 'FOUNDATION',
     icon: 'school',
     status: 'COMPLETED',
-    verificationState: 'SPECIMEN // PENDING TRANSCRIPT',
-    startDate: '2019',
-    endDate: '2021',
-    dateLabel: '2019 — 2021',
-    location: 'Academic Systems // Verified Track',
+    verificationState: 'PORTFOLIO_KNOWLEDGE',
+    dateLabel: 'FOUNDATIONAL STUDY',
+    location: 'Aethelgard Codex // Systems Core',
     description:
-      'Formal academic immersion in distributed computing systems, computational complexity, object-oriented software design, and algorithmic optimization. Focus on decoupled client-server topologies.',
-    thesisTopic: 'Predictive Spatial Telemetry & Scalable Concurrent State Machines.',
+      'Foundational curriculum immersion in distributed computing systems, computational complexity, object-oriented software design, and algorithmic optimization. Focus on decoupled client-server topologies.',
     focusAreas: [
       'Distributed Systems',
       'Advanced Algorithms',
@@ -41,8 +37,8 @@ export const EDUCATION_DATA = [
     ],
     technologies: ['Algorithms', 'Data Structures', 'C++', 'Java', 'Distributed Systems'],
     achievements: [
-      'Authored research analysis on distributed telemetry indexing pipelines',
-      'High-distinction defense in systems software engineering methodology',
+      'Studied distributed telemetry indexing topologies and scalable stream processing models',
+      'Analyzed concurrent state machine patterns and decoupled client-server protocols',
     ],
     coordinates: 'SEC-07 // ED-ALPHA.01',
     constellationPosition: { x: 22, y: 38 },
@@ -55,20 +51,17 @@ export const EDUCATION_DATA = [
     id: 'ed-002',
     nodeCode: 'ED_NODE_02',
     title: 'Software Engineering & Computing Foundations',
-    institution: 'Digital Computing Institute',
-    qualification: 'Bachelor of Science Track',
+    institution: 'Independent Study // Computing Core',
+    qualification: 'Foundational Curriculum Study',
     field: 'Software Engineering & Informatics',
-    level: 'BACHELOR_LEVEL',
+    level: 'FOUNDATION',
     icon: 'history_edu',
     status: 'COMPLETED',
-    verificationState: 'SPECIMEN // PENDING TRANSCRIPT',
-    startDate: '2015',
-    endDate: '2019',
-    dateLabel: '2015 — 2019',
-    location: 'Engineering Campus // Informatics Wing',
+    verificationState: 'PORTFOLIO_KNOWLEDGE',
+    dateLabel: 'FOUNDATIONAL STUDY',
+    location: 'Aethelgard Codex // Computing Core',
     description:
-      'Core undergraduate curriculum covering discrete mathematics, data structures, operating systems, relational database normalization, and web protocol engineering.',
-    thesisTopic: 'Decoupled Service Architectures & Modern Web Application Frameworks.',
+      'Foundational computing curriculum covering discrete mathematics, data structures, operating systems, relational database normalization, and web protocol engineering.',
     focusAreas: [
       'Software Architecture',
       'Discrete Mathematics',
@@ -78,8 +71,8 @@ export const EDUCATION_DATA = [
     ],
     technologies: ['JavaScript', 'SQL', 'C/C++', 'Software Engineering', 'Linux'],
     achievements: [
-      'Capstone Project: Real-time multi-tier logistics coordination platform',
-      'Academic commendation in Operating Systems & Memory Management',
+      'Applied discrete mathematics and data structure analysis to systems engineering',
+      'Studied operating system process scheduling, memory virtualization, and relational SQL normalization',
     ],
     coordinates: 'SEC-07 // ED-BETA.02',
     constellationPosition: { x: 50, y: 22 },
@@ -90,21 +83,19 @@ export const EDUCATION_DATA = [
   },
   {
     id: 'ed-003',
-    nodeCode: 'CERT_NODE_01',
+    nodeCode: 'ED_NODE_03',
     title: 'Cloud Solutions Architecture & Infrastructure',
-    institution: 'Cloud Engineering Alliance',
-    qualification: 'Solutions Architect Specialization',
+    institution: 'Portfolio Architecture // Cloud Practice',
+    qualification: 'Applied Architecture Track',
     field: 'Cloud Infrastructure & High Availability',
-    level: 'CERTIFICATION',
-    icon: 'workspace_premium',
+    level: 'ARCHITECTURE',
+    icon: 'cloud',
     status: 'ACTIVE',
-    verificationState: 'VERIFIED_CREDENTIAL',
-    startDate: '2022',
-    endDate: '2025',
-    dateLabel: 'ISSUED: 2022',
-    location: 'Cloud Academy // Certified Core',
+    verificationState: 'PORTFOLIO_KNOWLEDGE',
+    dateLabel: 'ACTIVE PRACTICE',
+    location: 'Aethelgard Codex // Cloud Sector',
     description:
-      'Rigorous industry certification demonstrating capability in multi-tier resilient cloud architectures, VPC networking isolation, serverless microservices, and storage tiering.',
+      'Applied cloud systems practice exploring multi-tier resilient architectures, VPC networking isolation, serverless microservices, and storage tiering.',
     focusAreas: [
       'Cloud Architecture',
       'High Availability',
@@ -114,10 +105,10 @@ export const EDUCATION_DATA = [
     ],
     technologies: ['Cloud Computing', 'Docker', 'REST APIs', 'Serverless', 'DevOps'],
     achievements: [
-      'Validated competency in highly resilient, fault-tolerant distributed cloud topologies',
-      'Automated deployment template authoring with strict least-privilege security perimeters',
+      'Architected containerized microservice gateways with isolated networking and secure ingress',
+      'Configured automated deployment environments with least-privilege credential controls',
     ],
-    coordinates: 'SEC-07 // CERT-GAMMA.01',
+    coordinates: 'SEC-07 // ED-GAMMA.03',
     constellationPosition: { x: 78, y: 44 },
     mobilePosition: { x: 50, y: 62 },
     relatedSkills: ['nodejs', 'mongodb'],
@@ -126,21 +117,19 @@ export const EDUCATION_DATA = [
   },
   {
     id: 'ed-004',
-    nodeCode: 'CERT_NODE_02',
+    nodeCode: 'ED_NODE_04',
     title: 'Advanced React & Modern Web Systems',
-    institution: 'Frontend Masters & Systems Guild',
-    qualification: 'Advanced Specialization',
+    institution: 'Technical Specialization // Web Systems',
+    qualification: 'Specialized Practice Track',
     field: 'Client-Side Systems & State Choreography',
     level: 'SPECIALIZATION',
     icon: 'terminal',
-    status: 'COMPLETED',
-    verificationState: 'VERIFIED_MODULE',
-    startDate: '2023',
-    endDate: '2023',
-    dateLabel: 'COMPLETED: 2023',
-    location: 'Web Systems Guild // Remote',
+    status: 'ACTIVE',
+    verificationState: 'PORTFOLIO_KNOWLEDGE',
+    dateLabel: 'ACTIVE PRACTICE',
+    location: 'Aethelgard Codex // Frontend Sector',
     description:
-      'Mastery of concurrent rendering models, custom state telemetry hooks, memory profiling, virtual DOM optimization, and tactile ergonomics for modern reactive web applications.',
+      'Advanced technical study of concurrent rendering models, custom state telemetry hooks, memory profiling, virtual DOM optimization, and tactile ergonomics for modern reactive web applications.',
     focusAreas: [
       'Concurrent React 18',
       'Component Lifecycles & Profiling',
@@ -150,10 +139,10 @@ export const EDUCATION_DATA = [
     ],
     technologies: ['React 18', 'Tailwind CSS', 'Framer Motion', 'Web Performance'],
     achievements: [
-      'Engineered sub-16ms tactile mobile touch components with zero frame drops',
-      'Architected accessible keyboard focus rings and screen-reader telemetry nodes',
+      'Implemented concurrent React 18 rendering lifecycles with custom state telemetry hooks',
+      'Architected accessible keyboard navigation rings and screen-reader telemetry nodes',
     ],
-    coordinates: 'SEC-07 // CERT-DELTA.02',
+    coordinates: 'SEC-07 // ED-DELTA.04',
     constellationPosition: { x: 62, y: 78 },
     mobilePosition: { x: 50, y: 82 },
     relatedSkills: ['react', 'tailwind'],
@@ -164,19 +153,17 @@ export const EDUCATION_DATA = [
     id: 'ed-005',
     nodeCode: 'ED_NODE_05',
     title: 'Visual Computing & Human-Computer Interface',
-    institution: 'Interactive Design Lab',
-    qualification: 'Foundational Immersion',
+    institution: 'Design Practice // Interface Lab',
+    qualification: 'Foundational Design Study',
     field: 'UI/UX Ergonomics & Interaction Design',
-    level: 'FOUNDATION',
+    level: 'SPECIALIZATION',
     icon: 'code',
     status: 'COMPLETED',
-    verificationState: 'ARCHIVAL_RECORD',
-    startDate: '2018',
-    endDate: '2018',
-    dateLabel: 'COMPLETED: 2018',
-    location: 'Design Lab // Field Studies',
+    verificationState: 'PORTFOLIO_KNOWLEDGE',
+    dateLabel: 'PORTFOLIO PRACTICE',
+    location: 'Aethelgard Codex // Design Sector',
     description:
-      'Intensive foundational training in visual hierarchy, typography scales, touch targets, contrast ratios, and interactive prototyping paradigms.',
+      'Foundational study in visual hierarchy, typography scales, touch targets, contrast ratios, and interactive prototyping paradigms.',
     focusAreas: [
       'Typography & Layout Systems',
       'Color Theory & Dark Mode Contrast',
@@ -185,7 +172,7 @@ export const EDUCATION_DATA = [
     ],
     technologies: ['UI/UX Design', 'Design Systems', 'Prototyping', 'CSS3'],
     achievements: [
-      'Pioneered dark-mode-first aesthetic standards for developer tooling interfaces',
+      'Designed high-contrast dark mode interfaces adhering to WCAG AA color accessibility standards',
     ],
     coordinates: 'SEC-07 // ED-EPSILON.05',
     constellationPosition: { x: 28, y: 72 },
@@ -200,17 +187,18 @@ export const EDUCATION_DATA = [
  * Knowledge pathway connections linking academic nodes in the constellation
  */
 export const EDUCATION_CONNECTIONS = [
-  { from: 'ed-002', to: 'ed-001', relationship: 'FOUNDATION_TO_ADVANCED' },
+  { from: 'ed-002', to: 'ed-001', relationship: 'FOUNDATION_TO_SYSTEMS' },
   { from: 'ed-002', to: 'ed-003', relationship: 'CORE_TO_INFRASTRUCTURE' },
   { from: 'ed-002', to: 'ed-005', relationship: 'CORE_TO_DESIGN_FOUNDATION' },
-  { from: 'ed-001', to: 'ed-003', relationship: 'ADVANCED_TO_CLOUD_SPECIALIZATION' },
+  { from: 'ed-001', to: 'ed-003', relationship: 'SYSTEMS_TO_CLOUD_ARCHITECTURE' },
   { from: 'ed-003', to: 'ed-004', relationship: 'INFRASTRUCTURE_TO_FRONTEND_SYSTEMS' },
   { from: 'ed-005', to: 'ed-004', relationship: 'DESIGN_TO_REACTIVE_PATTERNS' },
 ];
 
 export const EDUCATION_CATEGORIES = [
   'ALL',
-  'DEGREES',
-  'CERTIFICATIONS',
+  'FOUNDATIONS',
+  'ARCHITECTURE',
   'SPECIALIZATIONS',
 ];
+

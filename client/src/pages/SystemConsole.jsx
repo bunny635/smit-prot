@@ -11,6 +11,7 @@ import { MEMORY_TIMELINE_DATA } from '../data/memoryTimeline';
 import { EDUCATION_DATA } from '../data/education';
 import { ACHIEVEMENTS_DATA } from '../data/achievements';
 import { WORLD_DESTINATIONS } from '../data/worldDestinations';
+import { INVENTORY_ARTIFACTS } from '../data/inventoryData';
 
 import ConsoleHero from '../components/console/ConsoleHero';
 import SystemTelemetry from '../components/console/SystemTelemetry';
@@ -52,6 +53,7 @@ export function SystemConsole() {
     { cmd: 'memory', desc: 'Inspect Memory Valley chronological timeline' },
     { cmd: 'education', desc: 'Query foundational academic repositories' },
     { cmd: 'achievements', desc: 'Inspect Hall of Legends sigil honors' },
+    { cmd: 'inventory', desc: 'Query Inventory Vault technological relics' },
     { cmd: 'clear', desc: 'Purge terminal output buffer' },
     { cmd: 'hub', desc: 'Navigate to World Hub sector' },
     { cmd: 'origin', desc: 'Navigate to Origin Tower sector' },
@@ -241,6 +243,23 @@ export function SystemConsole() {
         ]);
         break;
 
+      case 'inventory':
+        setHistory([
+          ...newHistory,
+          {
+            type: 'generic-list',
+            content: {
+              title: 'INVENTORY VAULT // DATA ARCHIVES',
+              items: INVENTORY_ARTIFACTS.map((a) => ({
+                label: `${a.code}: ${a.title}`,
+                sub: a.type,
+                meta: a.tier,
+              })),
+            },
+          },
+        ]);
+        break;
+
       // Safe Navigation Protocols
       case 'hub':
         navigate('/hub');
@@ -250,6 +269,10 @@ export function SystemConsole() {
         break;
       case 'quests':
         navigate('/quests');
+        break;
+      case 'inventory-nav':
+      case 'inventory_nav':
+        navigate('/inventory');
         break;
       case 'skills-nav':
       case 'skills_nav':

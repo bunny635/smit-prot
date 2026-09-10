@@ -11,6 +11,7 @@ export const INITIAL_PLAYER_STATE = {
   visitedPages: [],
   unlockedAchievements: [],
   isVoidUnlocked: false,
+  equippedArtifacts: ['crys-react'],
 };
 
 export function PlayerProvider({ children }) {
@@ -64,12 +65,25 @@ export function PlayerProvider({ children }) {
     }));
   };
 
+  const toggleEquipArtifact = (id) => {
+    setPlayer((prev) => {
+      const current = prev.equippedArtifacts || [];
+      const exists = current.includes(id);
+      const updated = exists ? current.filter((item) => item !== id) : [...current, id];
+      return {
+        ...prev,
+        equippedArtifacts: updated,
+      };
+    });
+  };
+
   const value = {
     player,
     gainXP,
     visitPage,
     unlockAchievement,
     toggleVoid,
+    toggleEquipArtifact,
   };
 
   return (
