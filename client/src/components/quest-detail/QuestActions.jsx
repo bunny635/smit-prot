@@ -22,7 +22,7 @@ export function QuestActions({ project }) {
 
       {/* External Repository & Matrix Actions */}
       <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3">
-        {project.githubUrl && (
+        {project.githubUrl ? (
           <a
             href={project.githubUrl}
             target="_blank"
@@ -32,6 +32,15 @@ export function QuestActions({ project }) {
             <span className="material-symbols-outlined text-sm">code</span>
             <span>OPEN GITHUB</span>
           </a>
+        ) : (
+          <div
+            className="w-full sm:w-auto min-h-[44px] px-6 py-3 border border-outline-variant/30 bg-[#181814]/50 text-outline-variant/70 font-mono text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-not-allowed select-none"
+            title="Repository not configured in archives"
+            aria-disabled="true"
+          >
+            <span className="material-symbols-outlined text-sm">code_off</span>
+            <span>REPOSITORY NOT CONFIGURED</span>
+          </div>
         )}
 
         {project.liveUrl && (

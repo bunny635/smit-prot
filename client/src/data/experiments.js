@@ -31,7 +31,7 @@ export const EXPERIMENTS_DATA = [
     coordinates: 'SEC-05 // LAB-01',
     isFeatured: false,
     relatedQuestSlug: 'aethelgard-shader-core',
-    githubUrl: 'https://github.com',
+    githubUrl: null,
     liveUrl: null,
   },
   {
@@ -55,7 +55,7 @@ export const EXPERIMENTS_DATA = [
     coordinates: 'SEC-05 // LAB-02',
     isFeatured: true,
     relatedQuestSlug: 'smit-quest-engine',
-    githubUrl: 'https://github.com',
+    githubUrl: null,
     liveUrl: null,
   },
   {
@@ -79,7 +79,7 @@ export const EXPERIMENTS_DATA = [
     coordinates: 'SEC-05 // LAB-03',
     isFeatured: false,
     relatedQuestSlug: 'mobile-relic-hud',
-    githubUrl: 'https://github.com',
+    githubUrl: null,
     liveUrl: null,
   },
   {
@@ -103,7 +103,7 @@ export const EXPERIMENTS_DATA = [
     coordinates: 'SEC-05 // LAB-04',
     isFeatured: false,
     relatedQuestSlug: 'archival-codex-cli',
-    githubUrl: 'https://github.com',
+    githubUrl: null,
     liveUrl: null,
   },
   {
@@ -127,7 +127,7 @@ export const EXPERIMENTS_DATA = [
     coordinates: 'SEC-05 // LAB-05',
     isFeatured: false,
     relatedQuestSlug: 'nexus-gateway-api',
-    githubUrl: 'https://github.com',
+    githubUrl: null,
     liveUrl: null,
   },
 ];

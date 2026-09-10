@@ -89,7 +89,7 @@ export function QuestDetailHero({ project }) {
               MISSION BRIEFING
             </button>
 
-            {project.githubUrl && (
+            {project.githubUrl ? (
               <a
                 href={project.githubUrl}
                 target="_blank"
@@ -99,6 +99,15 @@ export function QuestDetailHero({ project }) {
                 <span className="material-symbols-outlined text-sm">code</span>
                 DEPLOY ARCHIVE
               </a>
+            ) : (
+              <div
+                className="px-6 py-3 border border-outline-variant/30 bg-surface-container-low/30 text-outline-variant/70 font-mono text-xs uppercase tracking-widest flex items-center gap-2 cursor-not-allowed select-none"
+                title="Repository not configured in archives"
+                aria-disabled="true"
+              >
+                <span className="material-symbols-outlined text-sm">code_off</span>
+                REPO NOT CONFIGURED
+              </div>
             )}
           </div>
         </div>

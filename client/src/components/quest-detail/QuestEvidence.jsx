@@ -60,8 +60,13 @@ export function QuestEvidence({ project }) {
               <span className="material-symbols-outlined text-sm">open_in_new</span>
             </a>
           ) : (
-            <div className="w-full py-2.5 px-4 border border-outline-variant/30 text-on-surface-variant/50 font-mono text-xs uppercase tracking-widest text-center">
-              ACCESS RESTRICTED
+            <div
+              className="w-full py-2.5 px-4 border border-outline-variant/30 text-outline-variant/70 font-mono text-xs uppercase tracking-widest text-center cursor-not-allowed select-none flex items-center justify-center gap-1.5"
+              title="Repository not configured in archives"
+              aria-disabled="true"
+            >
+              <span className="material-symbols-outlined text-sm">code_off</span>
+              <span>REPOSITORY NOT CONFIGURED</span>
             </div>
           )}
         </div>

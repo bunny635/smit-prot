@@ -11,12 +11,15 @@ import QuestButton from '../ui/QuestButton';
  * Renders individual project artifacts with technical telemetry, difficulty rating,
  * XP rewards, tech chips, and action node trigger.
  */
-export function QuestCard({
-  project,
-  onInspect,
-  isActive = false,
-  className = '',
-}) {
+export const QuestCard = React.forwardRef(function QuestCard(
+  {
+    project,
+    onInspect,
+    isActive = false,
+    className = '',
+  },
+  ref
+) {
   const navigate = useNavigate();
 
   const handleAccess = (e) => {
@@ -30,6 +33,7 @@ export function QuestCard({
 
   return (
     <motion.article
+      ref={ref}
       layout
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
@@ -129,6 +133,5 @@ export function QuestCard({
       </div>
     </motion.article>
   );
-}
-
+});
 export default QuestCard;

@@ -181,7 +181,7 @@ export function MobileQuestDrawer({ quest, isOpen, onClose }) {
                   ACCESS CORE
                 </QuestButton>
 
-                {quest.githubUrl && (
+                {quest.githubUrl ? (
                   <a
                     href={quest.githubUrl}
                     target="_blank"
@@ -191,6 +191,15 @@ export function MobileQuestDrawer({ quest, isOpen, onClose }) {
                     <span className="material-symbols-outlined text-[16px]">terminal</span>
                     <span>VIEW GITHUB REPOSITORY</span>
                   </a>
+                ) : (
+                  <div
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 border border-outline-variant/30 text-outline-variant/70 font-meta-technical text-[11px] tracking-widest uppercase rounded-DEFAULT bg-surface-container/20 cursor-not-allowed select-none"
+                    title="Repository not configured in archives"
+                    aria-disabled="true"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">code_off</span>
+                    <span>REPOSITORY NOT CONFIGURED</span>
+                  </div>
                 )}
               </div>
             </div>

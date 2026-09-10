@@ -104,7 +104,7 @@ export function QuestComplete({ project }) {
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            {project.githubUrl && (
+            {project.githubUrl ? (
               <a
                 href={project.githubUrl}
                 target="_blank"
@@ -114,6 +114,15 @@ export function QuestComplete({ project }) {
                 <span className="material-symbols-outlined text-sm">code</span>
                 VIEW GITHUB
               </a>
+            ) : (
+              <div
+                className="px-6 py-3 border border-outline-variant/30 text-outline-variant/70 font-mono text-xs uppercase tracking-widest bg-surface-container-low/30 flex items-center justify-center gap-2 cursor-not-allowed select-none"
+                title="Repository not configured in archives"
+                aria-disabled="true"
+              >
+                <span className="material-symbols-outlined text-sm">code_off</span>
+                <span>REPO NOT CONFIGURED</span>
+              </div>
             )}
             {project.liveUrl && (
               <a
@@ -175,7 +184,7 @@ export function QuestComplete({ project }) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            {project.githubUrl && (
+            {project.githubUrl ? (
               <a
                 href={project.githubUrl}
                 target="_blank"
@@ -185,6 +194,15 @@ export function QuestComplete({ project }) {
                 <span className="material-symbols-outlined text-sm">code</span>
                 INSPECT REPO
               </a>
+            ) : (
+              <div
+                className="px-6 py-3 border border-outline-variant/30 text-outline-variant/70 font-mono text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-not-allowed select-none"
+                title="Repository not configured in archives"
+                aria-disabled="true"
+              >
+                <span className="material-symbols-outlined text-sm">code_off</span>
+                <span>REPO NOT CONFIGURED</span>
+              </div>
             )}
             <Link
               to="/quests"
