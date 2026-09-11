@@ -259,7 +259,9 @@ export function ArtifactViewer3D({ artifact, reducedMotion = false }) {
       ringMat.dispose();
       particleGeo.dispose();
       particleMat.dispose();
+      
       renderer.dispose();
+      renderer.forceContextLoss();
 
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -270,7 +272,7 @@ export function ArtifactViewer3D({ artifact, reducedMotion = false }) {
   return (
     <div
       ref={mountRef}
-      className="w-full h-full cursor-grab active:cursor-grabbing relative select-none"
+      className="w-full h-full cursor-grab active:cursor-grabbing relative select-none touch-none"
       title={`3D View of ${artifact?.title || 'Relic'}. Drag to inspect.`}
       aria-label={`Interactive 3D Holographic Chamber for ${artifact?.title || 'Relic'}`}
     />

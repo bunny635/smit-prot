@@ -32,13 +32,20 @@ export function EnergyConnections({ activeDestinationId = null }) {
 
       const curve = new THREE.QuadraticBezierCurve3(pA, mid, pB);
       const points = curve.getPoints(24);
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      
+      const positions = new Float32Array(points.length * 3);
+      points.forEach((p, i) => {
+        positions[i * 3] = p.x;
+        positions[i * 3 + 1] = p.y;
+        positions[i * 3 + 2] = p.z;
+      });
 
       const isConnectedToActive =
         activeDestinationId === idA || activeDestinationId === idB;
 
       lines.push({
-        geometry,
+        positions,
+        pointsCount: points.length,
         key: `${idA}-${idB}-${index}`,
         isConnectedToActive,
       });
@@ -49,21 +56,23 @@ export function EnergyConnections({ activeDestinationId = null }) {
 
   return (
     <group name="energy-connections">
-      {connectionLines.map(({ geometry, key, isConnectedToActive }) => (
-        <primitive
-          key={key}
-          object={
-            new THREE.Line(
-              geometry,
-              new THREE.LineBasicMaterial({
-                color: isConnectedToActive ? 0xf2ca50 : 0xd4af37,
-                transparent: true,
-                opacity: isConnectedToActive ? 0.75 : 0.28,
-                linewidth: 1,
-              })
-            )
-          }
-        />
+      {connectionLines.map(({ positions, pointsCount, key, isConnectedToActive }) => (
+        <line key={key}>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={pointsCount}
+              array={positions}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial
+            color={isConnectedToActive ? '#f2ca50' : '#d4af37'}
+            transparent
+            opacity={isConnectedToActive ? 0.75 : 0.28}
+            linewidth={1}
+          />
+        </line>
       ))}
     </group>
   );

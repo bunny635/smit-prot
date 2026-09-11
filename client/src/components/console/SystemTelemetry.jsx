@@ -48,7 +48,7 @@ export function SystemTelemetry({
         <div className="p-3 bg-surface-container-lowest/80 border border-outline-variant/30 rounded-DEFAULT flex flex-col justify-between">
           <span className="text-[9px] text-outline-variant uppercase tracking-widest block">PLAYER LEVEL</span>
           <span className="text-primary font-bold text-sm">LVL {player.level}</span>
-          <span className="text-[9px] text-primary-fixed mt-1">{player.xp} / {player.nextLevelXp} XP</span>
+          <span className="text-[9px] text-primary-fixed mt-1">{player.currentXP} / {player.maxXP} XP</span>
         </div>
 
         {/* Active Sectors */}

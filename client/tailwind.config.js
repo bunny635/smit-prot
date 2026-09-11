@@ -30,6 +30,8 @@ export default {
         error: "#ffb4ab",
         "error-container": "#93000a",
         "surface-tint": "#e9c349",
+        "primary-fixed": "#ffe088",
+        "primary-fixed-dim": "#e9c349",
         "gold-glow": "rgba(212,175,55,0.15)",
         // Extended Aethelgard tones
         structure: "#101010",
@@ -76,6 +78,22 @@ export default {
         "gold-glow-subtle": "0 0 15px rgba(212,175,55,0.15)",
         "portal-glow": "0 0 100px 20px rgba(242, 202, 80, 0.3)",
         "gold-border-inset": "inset 0 0 10px rgba(242, 202, 80, 0.1)",
+      },
+      keyframes: {
+        fadeIn: {
+          to: { opacity: "1" },
+        },
+        "spin-slow": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
+        flow: {
+          to: { strokeDashoffset: "0" },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn 2s forwards",
+        "spin-slow": "spin-slow 8s linear infinite",
       },
     },
   },

@@ -97,8 +97,8 @@ export function SystemConsole() {
             content: {
               name: player.name,
               level: player.level,
-              xp: player.xp,
-              nextLevelXp: player.nextLevelXp,
+              xp: player.currentXP,
+              nextLevelXp: player.maxXP,
               visitedCount: player.visitedPages?.length || 0,
             },
           },

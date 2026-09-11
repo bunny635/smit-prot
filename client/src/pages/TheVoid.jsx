@@ -36,6 +36,15 @@ export default function TheVoid() {
 
   return (
     <div className="relative w-full max-w-5xl mx-auto flex flex-col items-center select-none overflow-x-hidden">
+      {/* Stitch Reference: Obsidian/Void Background */}
+      <div className="fixed inset-0 bg-[#050505] z-[-2] overflow-hidden pointer-events-none">
+        <div 
+          className="absolute inset-0 opacity-10 bg-cover bg-center mix-blend-overlay"
+          style={{ backgroundImage: `url('/assets/stitch/backgrounds/void-bg.webp')` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]" />
+      </div>
+
       {/* Ambient Gold Spotlight - quiet and atmospheric */}
       <div 
         className="fixed inset-0 pointer-events-none -z-10 bg-[radial-gradient(ellipse_at_50%_20%,rgba(242,202,80,0.06)_0%,rgba(242,202,80,0.015)_45%,transparent_75%)]"

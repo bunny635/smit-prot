@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PROJECTS_DATA } from '../data/projects';
 import QuestDetailHero from '../components/quest-detail/QuestDetailHero';
+import QuestVisualGallery from '../components/quest-detail/QuestVisualGallery';
 import MissionBriefing from '../components/quest-detail/MissionBriefing';
 import ArchitectureTopology from '../components/quest-detail/ArchitectureTopology';
 import TechnologyMatrix from '../components/quest-detail/TechnologyMatrix';
@@ -60,6 +61,9 @@ export function QuestDetail() {
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-12 sm:gap-16 pb-16">
       {/* 1. Hero Showcase: Identity, Metadata, Relic Graphic */}
       <QuestDetailHero project={project} />
+
+      {/* Holographic UI Gallery (QuickGo reference) */}
+      <QuestVisualGallery project={project} />
 
       {/* 2. Mission Briefing: Problem Statement & Solution Matrix */}
       <MissionBriefing project={project} />

@@ -28,9 +28,10 @@ export function ActiveQuestShowcase({ quest, onInspect }) {
   return (
     <section
       aria-label="Active Featured Quest"
-      className="relative w-full py-8 md:py-12 border-b border-outline-variant/30 overflow-hidden"
+      className="relative w-full py-8 md:py-12 border border-primary/30 rounded-lg overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.1)] before:absolute before:inset-0 before:bg-gradient-to-t before:from-background before:to-transparent before:z-0 bg-cover bg-center"
+      style={{ backgroundImage: `url('/assets/stitch/backgrounds/project-arena-bg.webp')` }}
     >
-      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center px-4 sm:px-8">
         {/* =========================================================================
             LEFT COLUMN: IDENTITY & MISSION CLASSIFICATION
             ========================================================================= */}

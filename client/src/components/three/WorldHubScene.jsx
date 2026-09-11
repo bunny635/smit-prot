@@ -12,16 +12,18 @@ import { WORLD_DESTINATIONS } from '../../data/worldDestinations';
 function AmbientDust({ count = 60, reducedMotion = false }) {
   const pointsRef = useRef();
 
-  const [positions, phases] = useMemo(() => {
+  const [positions, phases, baseYs] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const ph = new Float32Array(count);
+    const bys = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 80;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 80;
       ph[i] = Math.random() * Math.PI * 2;
+      bys[i] = pos[i * 3 + 1];
     }
-    return [pos, ph];
+    return [pos, ph, bys];
   }, [count]);
 
   useFrame((state, delta) => {
@@ -31,7 +33,7 @@ function AmbientDust({ count = 60, reducedMotion = false }) {
 
     for (let i = 0; i < count; i++) {
       // Subtle upward drift and oscillation
-      posArray[i * 3 + 1] += Math.sin(time * 0.5 + phases[i]) * 0.02;
+      posArray[i * 3 + 1] = baseYs[i] + Math.sin(time * 0.5 + phases[i]) * 0.8;
     }
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
     pointsRef.current.rotation.y += delta * 0.01;

@@ -30,6 +30,15 @@ export function OriginTower() {
       transition={{ duration: 0.6 }}
       className="relative w-full max-w-6xl mx-auto py-6 sm:py-10 flex flex-col gap-12 sm:gap-20 select-none overflow-x-hidden"
     >
+      {/* Stitch Reference: Fixed Atmospheric Chamber Background */}
+      <div className="fixed inset-0 z-[-1] bg-background overflow-hidden pointer-events-none">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay"
+          style={{ backgroundImage: `url('/assets/stitch/backgrounds/origin-tower-bg.webp')` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background" />
+      </div>
+
       {/* 1. Monolithic Origin Hero & Sacred Geometry Identity Core */}
       <OriginHero reducedMotion={prefersReducedMotion} />
 

@@ -33,6 +33,8 @@ export function DestinationNode({
   const rockColor = useMemo(() => new THREE.Color('#161616'), []);
   const goldColor = useMemo(() => new THREE.Color('#f2ca50'), []);
 
+  const targetScaleVec = useRef(new THREE.Vector3(1, 1, 1));
+
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
@@ -53,7 +55,8 @@ export function DestinationNode({
 
     // Smooth hover scale interpolation
     const targetScale = active ? 1.15 : 1.0;
-    groupRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), delta * 6);
+    targetScaleVec.current.set(targetScale, targetScale, targetScale);
+    groupRef.current.scale.lerp(targetScaleVec.current, delta * 6);
 
     // Emissive intensity animation on core
     if (coreRef.current) {

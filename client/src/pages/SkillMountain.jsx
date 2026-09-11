@@ -81,13 +81,20 @@ export function SkillMountain() {
 
         {/* Major Editorial Heading */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-2">
-          <div>
-            <span className="font-meta-technical text-[11px] text-primary/80 tracking-[0.25em] uppercase font-bold">
-              KNOWLEDGE PEAK MATRIX
-            </span>
-            <h1 className="font-display-hero text-[38px] sm:text-[52px] md:text-[64px] text-on-surface leading-tight tracking-tight uppercase drop-shadow-2xl">
-              SKILL MOUNTAIN
-            </h1>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/assets/stitch/avatars/skill-mountain-avatar.webp" 
+              alt="Architect Profile" 
+              className="w-16 h-16 rounded border border-primary/20 object-cover shrink-0" 
+            />
+            <div>
+              <span className="font-meta-technical text-[11px] text-primary/80 tracking-[0.25em] uppercase font-bold">
+                KNOWLEDGE PEAK MATRIX
+              </span>
+              <h1 className="font-display-hero text-[38px] sm:text-[52px] md:text-[64px] text-on-surface leading-tight tracking-tight uppercase drop-shadow-2xl">
+                SKILL MOUNTAIN
+              </h1>
+            </div>
           </div>
 
           {/* Technical Summary Stats */}
