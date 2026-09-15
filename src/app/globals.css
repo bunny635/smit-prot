@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-museum-black: #080808;
+  --color-museum-charcoal: #111111;
+  --color-museum-surface: #171717;
+  --color-museum-surface-elevated: #202020;
+  --color-museum-white: #F5F3EE;
+  --color-museum-muted: #A7A39A;
+  --color-museum-dim: #6F6C66;
+  --color-museum-gold: #D8B45A;
+  --color-museum-gold-bright: #F2D47C;
+  --color-museum-gold-dim: #8D7437;
+  --color-museum-border: #2C2C29;
+  --color-error: #C97878;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-dm-serif), ui-serif, Georgia, serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-museum-black);
+  color: var(--color-museum-white);
+  font-family: var(--font-sans);
+}
+
+@utility display-xl { font-family: var(--font-serif); font-size: 52px; line-height: 1; @media (min-width: 768px) { font-size: 96px; } }
+@utility display-lg { font-family: var(--font-serif); font-size: 44px; line-height: 1.05; @media (min-width: 768px) { font-size: 72px; } }
+@utility display-md { font-family: var(--font-serif); font-size: 36px; line-height: 1.05; @media (min-width: 768px) { font-size: 56px; } }
+
+@utility heading-lg { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; @media (min-width: 768px) { font-size: 40px; } }
+@utility heading-md { font-family: var(--font-sans); font-size: 24px; line-height: 1.2; @media (min-width: 768px) { font-size: 30px; } }
+@utility heading-sm { font-family: var(--font-sans); font-size: 20px; line-height: 1.3; @media (min-width: 768px) { font-size: 24px; } }
+
+@utility body-lg { font-family: var(--font-sans); font-size: 18px; line-height: 1.6; @media (min-width: 768px) { font-size: 20px; } }
+@utility body-md { font-family: var(--font-sans); font-size: 16px; line-height: 1.6; }
+@utility body-sm { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; }
+
+@utility caption { font-family: var(--font-sans); font-size: 12px; line-height: 1.4; color: var(--color-museum-muted); }
+@utility label-caps { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+@utility label-metadata { font-family: var(--font-sans); font-size: 14px; color: var(--color-museum-muted); }
+
+@utility focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  &:focus-visible {
+    outline-color: var(--color-museum-gold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

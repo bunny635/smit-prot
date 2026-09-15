@@ -1,0 +1,1129 @@
+﻿Security & Access Document â€” The Digital Museum
+Document version: 1.0Product: The Digital MuseumSecurity posture: Small public portfolio with a private owner/admin areaRecommended architecture: Next.js + Supabase Auth + PostgreSQL + Supabase Storage + RLS
+The most important security decision is also the simplest one:
+Almost everyone is a visitor. Only you are an administrator.
+That means we should not build a complicated permission system for V1. We should make public content genuinely public, keep management capabilities private, enforce authorization in the database, and use MFA for the admin account.
+Supabase Auth fits this architecture because it integrates authentication with PostgreSQL Row Level Security, allowing database access to be controlled according to the authenticated user's identity. 
+
+1. Security Goals
+The Digital Museum has five primary security goals.
+1. Protect the admin account
+An attacker must not be able to log into the private management area or take control of the museum.
+2. Keep unpublished content private
+Draft projects, unpublished experiments, private media, and internal settings must never accidentally appear publicly.
+3. Prevent unauthorized database changes
+A visitor should never be able to:
+edit a project, 
+publish content, 
+delete media, 
+change your profile, 
+change site settings. 
+4. Protect secrets
+Database secret keys, SMTP credentials, API keys, and other credentials must remain server-side.
+5. Fail safely
+When something breaks, the user should get a useful message without seeing stack traces, database errors, secrets, internal paths, or other sensitive implementation details. OWASP specifically recommends generic authentication errors and avoiding sensitive information in error responses. 
+
+2. Threat Model
+We should design against realistic threats rather than imaginary Hollywood hacking.
+Threat A â€” Someone attempts to access /admin
+They discover the URL and try to enter the admin dashboard.
+Protection:
+authentication required 
+server-side authorization 
+database RLS 
+MFA 
+
+Threat B â€” Visitor calls the database directly
+An attacker uses browser tools or Supabase APIs to attempt:
+INSERT project
+UPDATE project
+DELETE project
+Protection:
+RLS 
+restrictive grants 
+public role gets only intended access 
+Supabase's current guidance is explicit that enabling RLS alone isn't the whole story: table grants and policies both need to be correctly configured. 
+
+Threat C â€” Visitor tries to read unpublished projects
+They may guess:
+/museum/projects/secret-project
+or query the database directly.
+Protection:
+Database policy must require:
+published = true
+for anonymous/public reads.
+The application should never rely solely on hiding a project from the UI.
+
+Threat D â€” Admin credentials are stolen
+If the attacker gets your password, normal password-only authentication is not enough.
+Protection:
+Use MFA for the administrator.
+Supabase supports MFA and can enforce higher authentication assurance levels through RLS policies. 
+
+Threat E â€” Malicious contact form submissions
+Someone sends:
+spam 
+enormous payloads 
+HTML/JavaScript 
+thousands of requests 
+malicious URLs 
+Protection:
+server-side validation 
+payload size limits 
+rate limiting 
+HTML escaping/safe rendering 
+optional bot protection 
+
+Threat F â€” Malicious uploaded files
+An attacker somehow gets access to an upload endpoint and uploads:
+executable files 
+enormous videos 
+misleading file extensions 
+malicious SVGs 
+Protection:
+authenticated upload only 
+MIME validation 
+size limits 
+allowlist formats 
+private admin upload path 
+no arbitrary HTML execution 
+
+3. Authentication Strategy
+Recommended: Supabase Auth + Email/Password + MFA
+For the owner/admin account, I'd use:
+Email + password + MFA
+Supabase supports password authentication, magic links, OTP, social login and other methods. 
+For this product, email/password + MFA is the most straightforward choice.
+Why?
+Because this isn't a consumer SaaS product with thousands of users.
+You only need to protect a tiny number of privileged accounts.
+
+4. Public Visitors Do NOT Need Accounts
+This is an important product/security decision.
+Visitors should be able to:
+enter the museum, 
+view projects, 
+view experiments, 
+view your profile, 
+open archive items, 
+contact you, 
+without registering.
+There is no reason to create an account system for portfolio visitors.
+That dramatically reduces your attack surface.
+
+5. Authentication Flow
+Admin login:
+ADMIN
+  â”‚
+  â–¼
+/admin/login
+  â”‚
+  â–¼
+Enter email + password
+  â”‚
+  â–¼
+Supabase Auth
+  â”‚
+  â”œâ”€â”€ INVALID â”€â”€â”€â”€â”€â”€â”€â–º Generic error
+  â”‚
+  â””â”€â”€ VALID
+        â”‚
+        â–¼
+     MFA check
+        â”‚
+        â”œâ”€â”€ FAIL â”€â”€â”€â”€â–º Generic error
+        â”‚
+        â””â”€â”€ PASS
+              â”‚
+              â–¼
+          /admin
+Do not expose different messages such as:
+â€œThat email doesn't exist.â€
+versus:
+â€œWrong password.â€
+That difference can allow attackers to discover valid accounts. OWASP recommends generic responses for authentication failures to reduce account enumeration. 
+Use something like:
+Unable to sign in. Check your credentials and try again.
+
+6. Roles
+For V1, use only three logical roles.
+Role
+Who
+Purpose
+Visitor
+Everyone
+Browse the museum
+Admin
+You
+Manage everything
+System
+Server-side services
+Perform trusted backend operations
+Do not create Editor, Moderator, Curator, Manager, etc. until there is a real need.
+That keeps privilege boundaries clean.
+OWASP recommends least privilege and deny-by-default access control. 
+
+7. Role: Visitor
+Can
+Visitors can:
+enter the museum 
+view published projects 
+view published experiments 
+view public profile information 
+view published timeline entries 
+view public media 
+click live project links 
+click GitHub/LinkedIn/contact links 
+submit the contact form 
+Cannot
+Visitors cannot:
+access /admin 
+create projects 
+edit projects 
+delete projects 
+publish projects 
+unpublish projects 
+modify your profile 
+change site settings 
+upload media 
+delete media 
+view drafts 
+view private analytics 
+view admin users 
+read security configuration 
+
+8. Role: Admin
+The Admin is the museum owner.
+Can
+Admin can:
+create projects 
+edit projects 
+delete projects 
+publish/unpublish projects 
+create experiments 
+edit experiments 
+delete experiments 
+publish/unpublish experiments 
+manage timeline 
+edit profile 
+upload media 
+delete media 
+change site configuration 
+view analytics 
+manage museum content 
+Cannot
+Even the Admin should not:
+expose secrets through the browser 
+access raw infrastructure credentials from normal UI 
+disable fundamental database protections accidentally 
+execute arbitrary SQL from the public dashboard 
+modify another production environment unintentionally 
+The principle is:
+Admin manages content, not infrastructure.
+
+9. Role: System
+The System isn't a human.
+It represents trusted server-side operations.
+Examples:
+server-side revalidation 
+scheduled cleanup 
+analytics processing 
+email delivery 
+privileged administrative operations 
+This role is where a Supabase secret key may be used.
+Supabase's documentation states that secret keys have elevated access and should only be used in secure, developer-controlled server-side environments; they bypass RLS. 
+
+10. Authorization Model
+The security model should be:
+                 REQUEST
+                    â”‚
+                    â–¼
+             Is user authenticated?
+                 /        \
+               NO          YES
+               â”‚            â”‚
+               â–¼            â–¼
+            Visitor       Admin?
+                            â”‚
+                         /     \
+                       NO       YES
+                       â”‚         â”‚
+                       â–¼         â–¼
+                    Visitor    Admin
+But don't rely on application code alone.
+There should be three layers:
+Layer 1
+UI protection
+
+Layer 2
+Server authorization
+
+Layer 3
+Database RLS
+If one layer fails, another should still stop the unauthorized operation.
+
+11. Row-Level Security Strategy
+This is one of the most important parts of the system.
+Every exposed database table must have an explicit access policy. Supabase recommends enabling RLS on every table in an exposed schema and separately controlling table grants and policies. 
+Our central rule:
+Deny by default; explicitly allow what the role needs.
+
+12. profiles RLS
+Public SELECT
+Visitors may see only the public profile.
+Conceptually:
+SELECT
+  WHERE is_public = true;
+Admin
+Admin can:
+SELECT 
+INSERT if needed 
+UPDATE 
+DELETE 
+Visitor cannot
+UPDATE 
+DELETE 
+insert arbitrary profile records 
+
+13. projects RLS
+This is the most important table.
+Anonymous visitor
+Can:
+SELECT published projects
+Cannot:
+INSERT
+UPDATE
+DELETE
+Conceptual rule:
+CREATE POLICY "public can read published projects"
+ON projects
+FOR SELECT
+TO anon, authenticated
+USING (published = true);
+Then a separate admin policy allows the authenticated admin to manage projects.
+
+14. Draft Protection
+This is critical.
+Suppose:
+Project A = published
+Project B = draft
+The visitor should see:
+Project A
+but not:
+Project B
+Even if someone knows the slug:
+/museum/projects/project-b
+the server must return not found or equivalent safe behavior.
+Do not return:
+â€œThis project exists but is unpublished.â€
+That leaks information.
+
+15. project_sections RLS
+A section should only be visible if its parent project is published.
+Conceptually:
+Visitor
+  â†“
+project_section
+  â†“
+parent project
+  â†“
+published = true
+This prevents a draft section from leaking through a direct database query.
+
+16. technologies RLS
+Technologies can be publicly readable.
+Visitors can:
+SELECT
+Admin can:
+SELECT
+INSERT
+UPDATE
+DELETE
+Visitors cannot modify the technology catalogue.
+
+17. project_technologies RLS
+Visitors may read relationships belonging to published projects.
+Admin can manage all relationships.
+Visitors cannot create arbitrary associations.
+
+18. media RLS
+This requires extra care.
+Public media
+Can be served publicly.
+Examples:
+project thumbnails 
+published project images 
+public profile photo 
+Private media
+Must not be publicly readable.
+Examples:
+draft images 
+internal design documents 
+admin uploads not yet published 
+private assets 
+The Storage access rules should follow the same publication model.
+Supabase Storage provides access control through policies as well, so the same least-privilege approach should be applied there. 
+
+19. project_media RLS
+Visitor can read:
+media attached to published projects
+Admin can manage all relationships.
+
+20. experiments RLS
+Exactly like projects:
+Visitor
+SELECT where published = true
+Admin
+SELECT
+INSERT
+UPDATE
+DELETE
+
+21. experiment_technologies RLS
+Visitor can see relationships for published experiments.
+Admin manages everything.
+
+22. timeline_entries RLS
+Visitor:
+SELECT published timeline entries
+Admin:
+SELECT
+INSERT
+UPDATE
+DELETE
+No public writing.
+
+23. site_settings RLS
+This table should be more restrictive.
+Visitor
+Only read explicitly public settings, preferably through a safe public view or server-side query.
+Admin
+Full management.
+System
+Server-only operations.
+I would avoid exposing sensitive configuration through this table entirely.
+
+24. analytics_events RLS
+Do not allow public users to query analytics.
+Visitor
+Can potentially trigger an analytics event through a controlled endpoint.
+Cannot:
+SELECT analytics
+UPDATE analytics
+DELETE analytics
+Admin
+Can read analytics.
+System
+Can insert/process events.
+
+25. Access Matrix
+Here's the policy at a glance:
+Resource
+Visitor Read
+Visitor Write
+Admin Read
+Admin Write
+Profiles
+âœ… Public only
+âŒ
+âœ…
+âœ…
+Projects
+âœ… Published
+âŒ
+âœ…
+âœ…
+Project sections
+âœ… Published parents
+âŒ
+âœ…
+âœ…
+Technologies
+âœ…
+âŒ
+âœ…
+âœ…
+Project technologies
+âœ… Published projects
+âŒ
+âœ…
+âœ…
+Media
+âœ… Public only
+âŒ
+âœ…
+âœ…
+Project media
+âœ… Published projects
+âŒ
+âœ…
+âœ…
+Experiments
+âœ… Published
+âŒ
+âœ…
+âœ…
+Experiment technologies
+âœ… Published
+âŒ
+âœ…
+âœ…
+Timeline
+âœ… Published
+âŒ
+âœ…
+âœ…
+Site settings
+Limited/public
+âŒ
+âœ…
+âœ…
+Analytics
+âŒ
+Controlled events only
+âœ…
+âœ…
+
+26. Admin Authorization
+Do not determine admin status from something like:
+if (email === "myemail@gmail.com")
+That is brittle and dangerous.
+Instead, use an explicit role/claim or a tightly controlled server-side admin mapping.
+For a single-owner V1, a simple profile.role = 'admin' combined with server-side verification can work.
+The key is:
+The browser must never be able to grant itself admin status.
+
+27. MFA Requirement
+I strongly recommend MFA for the Admin.
+The flow becomes:
+Password
+   â†“
+MFA
+   â†“
+Admin access
+Supabase supports MFA and can enforce an MFA assurance level in RLS policies. 
+For V1:
+MFA is optional for visitors and mandatory for Admin.
+
+28. Session Security
+Use the framework's server-side auth integration.
+The application must:
+use secure cookies 
+avoid putting access tokens in localStorage unnecessarily 
+refresh sessions safely 
+invalidate sessions on sign-out 
+protect admin routes server-side 
+For Next.js + Supabase, use the SSR-oriented Supabase integration rather than inventing your own session system.
+
+29. Password Rules
+For the admin account:
+use a long, unique password 
+do not reuse it elsewhere 
+use a password manager 
+enable MFA 
+don't store the password anywhere in the codebase 
+don't share credentials via GitHub/Discord/WhatsApp 
+The most likely admin-account compromise is usually not some exotic database exploit.
+It's:
+password reuse + phishing + leaked credentials.
+
+30. Environment Secrets
+Never put these in client code:
+SUPABASE_SECRET_KEY
+RESEND_API_KEY
+SENTRY_AUTH_TOKEN
+SMTP credentials
+private API keys
+Only public configuration should be browser-visible.
+Supabase specifically distinguishes publishable keys from secret keys and recommends keeping elevated secret keys in trusted server-side components. 
+
+31. Error Handling Philosophy
+Every failure should follow:
+Detect
+ â†“
+Log internally
+ â†“
+Return safe message
+ â†“
+Recover when possible
+ â†“
+Keep application usable
+Never:
+Detect
+ â†“
+Show raw exception to user
+OWASP recommends safely handling exceptions and avoiding sensitive debugging information in user-visible errors. 
+
+32. Error Response Structure
+Internally:
+Error ID
+Timestamp
+Request ID
+Endpoint
+Error type
+Stack trace
+User/session context where safe
+Publicly:
+Something went wrong.
+Please try again.
+Reference: ABC123
+The user does not need:
+Postgres error 23505
+supabase-client.ts:183
+JWT verification exception
+SECRET_KEY missing
+
+33. Error Handling â€” Authentication
+Wrong password
+Show:
+Unable to sign in. Check your credentials and try again.
+Do not identify which field was wrong.
+
+MFA failure
+Show:
+Verification failed. Please try again.
+
+Expired session
+Redirect to:
+/admin/login
+with:
+Your session expired. Please sign in again.
+
+Too many attempts
+Show:
+Too many attempts. Please try again later.
+Do not reveal exact security thresholds.
+
+34. Error Handling â€” Authorization
+If a visitor attempts:
+/admin
+return:
+401/redirect to login.
+If a signed-in non-admin somehow requests an admin operation:
+403 Forbidden.
+But the public interface should simply hide admin controls from them.
+
+35. Error Handling â€” Project Not Found
+If the project:
+doesn't exist, 
+has been deleted, 
+is unpublished, 
+show the same result:
+Exhibit not found.
+This prevents information leakage about unpublished content.
+
+36. Error Handling â€” Database Failure
+If PostgreSQL/Supabase is unavailable:
+Public page
+Show cached/static content where possible.
+Otherwise:
+The museum is temporarily unavailable. Please try again shortly.
+Admin
+Show:
+We couldn't save your changes. Your content was not published.
+Never pretend a failed save succeeded.
+That's important.
+
+37. Error Handling â€” Partial Save
+Imagine admin changes:
+Project title âœ…
+Description âœ…
+Image upload âŒ
+Do not leave the UI saying:
+Saved!
+Instead:
+Project saved, but the new image could not be uploaded.
+Better yet, make the operation transactional where practical.
+
+38. Error Handling â€” Image Upload
+Possible errors:
+File too large
+This file is too large. Please choose a smaller file.
+Unsupported type
+This file type isn't supported.
+Network failure
+Upload failed. Check your connection and try again.
+Storage outage
+The media service is temporarily unavailable.
+
+39. Error Handling â€” WebGL
+If 3D rendering fails:
+3D Museum
+   â†“
+Fallback Gallery
+User sees the normal museum interface.
+Never show:
+WebGL initialization failed at line 492...
+That belongs in internal logs.
+
+40. Error Handling â€” Model Loading
+If a 3D artifact fails to load:
+Show:
+This exhibit is unavailable in 3D.
+Then show:
+image 
+description 
+project details 
+The visitor should still be able to continue.
+
+41. Error Handling â€” Contact Form
+Validation error
+Please check the highlighted fields.
+Mail delivery failure
+Your message could not be sent. Please use the email link instead.
+Rate limit
+Too many messages. Please try again later.
+Never show email-provider API errors.
+
+42. Error Handling â€” Analytics
+Analytics failure should never break the portfolio.
+analytics fails
+       â†“
+log silently
+       â†“
+continue page
+A broken analytics request should never cause:
+â€œMuseum failed to load.â€
+Analytics is secondary functionality.
+
+43. Error Handling â€” Admin Save
+Every content mutation should have three states:
+Idle
+
+Saving...
+
+Saved âœ“
+or:
+Save failed âœ•
+Try again
+Never leave the user guessing whether their changes were saved.
+
+44. Error Handling â€” Concurrent Editing
+Even if only you are the admin today, this can happen:
+Browser tab A
+     â”‚
+     â”œâ”€â”€ edits project
+     â”‚
+Browser tab B
+     â”‚
+     â””â”€â”€ edits same project
+For V1, at minimum use:
+updated_at
+and detect stale updates.
+Future version can implement optimistic concurrency/version numbers.
+
+45. Error Handling â€” Deleted Content
+If a project is deleted while someone is viewing it:
+The next request should safely return:
+Exhibit not found.
+No crash.
+No stack trace.
+No broken page.
+
+46. Error Handling â€” Broken External Links
+Your project might have:
+Live Demo
+GitHub
+LinkedIn
+External links may disappear.
+The website should not crash.
+Optionally validate important links periodically later.
+
+47. Error Handling â€” Missing Media
+If an image is missing:
+hero image
+    â†“
+fallback image
+The project content should still render.
+Never let a missing thumbnail destroy the page layout.
+
+48. Security Logging
+Log security-relevant events:
+admin_login_success
+admin_login_failure
+mfa_failure
+admin_logout
+unauthorized_admin_request
+project_created
+project_published
+project_unpublished
+project_deleted
+media_uploaded
+media_deleted
+For particularly sensitive events, include:
+timestamp 
+actor ID 
+event type 
+request ID 
+relevant resource ID 
+Avoid logging:
+passwords 
+auth tokens 
+secret keys 
+full private user data 
+
+49. Rate Limiting
+Rate limit:
+Admin login
+Very important.
+Contact form
+Very important.
+Public analytics endpoint
+Recommended.
+Media uploads
+Admin only, but still protect it.
+You don't need to rate-limit normal project browsing aggressively.
+
+50. Input Validation
+Never trust:
+form input
+URL parameters
+query strings
+uploaded files
+HTTP headers
+JSON payloads
+Validate server-side.
+For example, a project creation request should validate:
+title
+slug
+description
+year
+URLs
+status
+media IDs
+Use Zod or equivalent.
+
+51. URL Validation
+Don't blindly accept:
+javascript:...
+or malformed URLs.
+For user-entered external links, allow safe protocols:
+https:
+http:
+Generally reject:
+javascript:
+data:
+file:
+
+52. XSS Protection
+Potential attack:
+Someone places HTML into a project description:
+<script>...</script>
+Project content should be rendered as escaped text, or passed through a carefully controlled sanitization pipeline if rich HTML/Markdown is eventually supported.
+Do not render arbitrary HTML from the database.
+
+53. Markdown Security
+If you later allow Markdown:
+Markdown
+ â†“
+sanitize
+ â†“
+safe HTML
+ â†“
+render
+Never assume Markdown is harmless.
+Links, embedded HTML and media can introduce attack surfaces.
+
+54. File Upload Security
+Allow only approved formats.
+Images
+jpg
+jpeg
+png
+webp
+avif
+Video
+Only formats you genuinely need.
+3D
+glb
+Do not allow arbitrary executable file types.
+
+55. SVG Warning
+SVG deserves special attention.
+If you accept SVG uploads, treat them as potentially active content.
+For V1, the safest option is:
+Don't allow arbitrary SVG uploads.
+Use SVG files you control in the repository.
+
+56. File Size Limits
+Set explicit limits.
+For example:
+Project image: 10 MB
+Large video: controlled separately
+3D model: 25â€“50 MB depending on need
+Avatar: 5 MB
+These are starting values, not sacred numbers.
+The real principle is:
+Every upload endpoint needs a maximum size.
+
+57. Content Security Policy
+Before launch, add a sensible Content Security Policy.
+At minimum, restrict:
+scripts 
+images 
+fonts 
+frames 
+connections 
+media 
+Three.js and external providers will require deliberate allowances.
+Do not blindly copy a giant CSP from the internet and call it secure.
+
+58. Security Headers
+Configure appropriate headers such as:
+Content-Security-Policy
+Strict-Transport-Security
+X-Content-Type-Options
+Referrer-Policy
+Permissions-Policy
+Also ensure the application is served exclusively over HTTPS in production.
+
+59. CSRF
+For admin mutations and contact forms, use the framework's standard secure request/session mechanisms and don't create unsafe cross-origin mutation endpoints.
+The important rule:
+A random website should not be able to make your browser perform privileged admin actions.
+
+60. Open Redirect Protection
+Be careful with redirect parameters like:
+/login?redirect=https://evil.com
+Only permit approved internal destinations.
+Otherwise an attacker can turn your site into a phishing redirector.
+
+61. Dependency Security
+Run dependency audits regularly.
+Keep:
+Next.js
+React
+Supabase SDK
+Three.js
+R3F
+updated.
+But don't blindly auto-upgrade production dependencies.
+Use:
+update
+â†’ test
+â†’ preview
+â†’ deploy
+
+62. Database Backups
+Before launch, verify:
+backups exist 
+restore process is understood 
+production database is separate from development 
+destructive migrations are reviewed 
+OWASP recommends separation between development/UAT/production environments and applying least privilege to database accounts. 
+
+63. Production/Development Separation
+Never use the same database while experimenting.
+Use:
+Development
+   â†“
+Development Supabase
+
+Production
+   â†“
+Production Supabase
+This prevents an accidental migration or delete operation from destroying your live portfolio.
+
+64. Security Edge Cases Before Launch
+Here's the practical launch checklist.
+Authentication
+Admin MFA enabled 
+Strong unique admin password 
+Password reset tested 
+expired session handled 
+invalid login handled 
+rate limiting tested 
+account enumeration prevented 
+Authorization
+/admin protected 
+server-side authorization enforced 
+anonymous users cannot mutate content 
+non-admin authenticated users cannot mutate content 
+unpublished content inaccessible 
+private media inaccessible 
+Database
+RLS enabled on every exposed table 
+grants reviewed 
+anonymous SELECT policies reviewed 
+admin policies tested 
+delete policies tested 
+draft leakage tested 
+RLS test suite passes 
+Supabase specifically recommends testing allow/deny behavior for anonymous and authenticated roles for each exposed table. 
+Secrets
+no secrets committed to Git 
+.env.local ignored 
+.env.example contains names but not values 
+service/secret key only server-side 
+API credentials rotated before production if ever exposed 
+Input
+form validation 
+URL validation 
+payload size limits 
+upload restrictions 
+XSS protections 
+Files
+allowed MIME types 
+upload size limits 
+private/public storage separation 
+SVG policy 
+missing-media fallback 
+Frontend
+WebGL fallback 
+reduced-motion support 
+no sensitive data in client JavaScript 
+no secrets in browser network requests 
+error boundaries 
+loading states 
+Infrastructure
+HTTPS 
+security headers 
+CSP 
+backups 
+production database separate 
+monitoring enabled 
+
+65. Edge Cases Specific to the Museum
+These are easy to overlook.
+Edge case: visitor shares an unpublished project URL
+Expected:
+404 / Exhibit not found
+Not:
+This is an unpublished project.
+
+Edge case: visitor has an old bookmarked project
+If deleted:
+404
+If archived:
+show archive state.
+
+Edge case: browser doesn't support WebGL
+Fallback to 2D.
+
+Edge case: device is extremely slow
+Reduce:
+particles 
+3D 
+shadows 
+post-processing 
+animations 
+
+Edge case: user prefers reduced motion
+Disable cinematic movement.
+
+Edge case: user is offline
+Previously cached/static pages may still work.
+Dynamic content should display a friendly error rather than crash.
+
+Edge case: an image fails
+Use fallback artwork.
+
+Edge case: project has no live demo
+Hide the live-demo button rather than showing a broken link.
+
+Edge case: project has no GitHub repository
+Hide the GitHub button.
+
+Edge case: project has only one screenshot
+The layout should still look intentional.
+
+Edge case: there are zero projects
+The museum should still show a meaningful empty state rather than a broken gallery.
+For example:
+The collection is currently being curated.
+
+Edge case: contact email is temporarily unavailable
+Provide an alternative:
+GitHub 
+LinkedIn 
+
+Edge case: database is down during a public visit
+Render static/cached content where possible.
+The museum should degrade gracefully.
+
+66. Recommended Security Architecture
+Putting everything together:
+                        INTERNET
+                            â”‚
+                            â–¼
+                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                     â”‚   Vercel   â”‚
+                     â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+                           â”‚
+                 â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                 â”‚                   â”‚
+                 â–¼                   â–¼
+             PUBLIC UI            ADMIN UI
+                 â”‚                   â”‚
+                 â”‚              Supabase Auth
+                 â”‚                   â”‚
+                 â”‚                MFA âœ“
+                 â”‚                   â”‚
+                 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                           â”‚
+                           â–¼
+                     SERVER LAYER
+                           â”‚
+                           â–¼
+                    PostgreSQL + RLS
+                           â”‚
+                 â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                 â”‚         â”‚         â”‚
+                 â–¼         â–¼         â–¼
+              Content   Private    Public
+              tables     media      media
+
+67. The Security Principle for V1
+If I had to reduce this entire document to six rules, they would be:
+1. Visitors don't need accounts.
+Less authentication = less attack surface.
+2. You are the only administrator.
+Don't build roles you don't need.
+3. MFA protects the admin.
+Your admin account controls your entire portfolio.
+4. RLS is the final authority.
+Never trust the frontend to protect data.
+5. Unpublished means invisible.
+Draft content must be impossible for anonymous users to read.
+6. Errors fail safely.
+Users get useful messages; attackers don't get your internals.
+The combination of least privilege, deny-by-default authorization, server-side checks and database-level RLS follows established application-security guidance from OWASP and Supabase. 
+
+68. Final V1 Security Posture
+For The Digital Museum, I would deliberately keep the security architecture small:
+PUBLIC
+â”‚
+â”œâ”€â”€ Read published museum content
+â”œâ”€â”€ View public media
+â”œâ”€â”€ Submit contact form
+â””â”€â”€ Send analytics events
+
+ADMIN
+â”‚
+â”œâ”€â”€ MFA
+â”œâ”€â”€ Manage projects
+â”œâ”€â”€ Manage experiments
+â”œâ”€â”€ Manage media
+â”œâ”€â”€ Manage profile
+â””â”€â”€ View analytics
+
+SYSTEM
+â”‚
+â”œâ”€â”€ Server-side secret access
+â”œâ”€â”€ Email delivery
+â”œâ”€â”€ Revalidation
+â””â”€â”€ Trusted backend tasks
+And the most important boundary is:
+             PUBLIC
+               â”‚
+               â”‚ READ
+               â–¼
+        PUBLISHED CONTENT
+               â–²
+               â”‚
+          ADMIN WRITES
+               â”‚
+             ADMIN
+There should be no path from public browser â†’ privileged database operation.
+That is the security posture I'd be comfortable launching this product with.
+

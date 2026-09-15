@@ -1,0 +1,1628 @@
+﻿Technical Architecture Document â€” The Digital Museum
+Version: 1.0Status: Architecture proposalProduct: The Digital MuseumArchitecture style: Full-stack web application + content-driven CMS layer + progressive 3D enhancementPrimary goals: Performance, visual quality, maintainability, SEO, accessibility, easy content updates
+
+1. Architecture Decision Summary
+Recommended stack
+Layer
+Technology
+Why
+Framework
+Next.js + React
+Full-stack React, routing, metadata, server rendering, image optimization
+Language
+TypeScript
+Type safety across components, content and database
+Styling
+Tailwind CSS
+Fast, consistent design system
+UI
+React components
+Reusable museum/exhibit architecture
+Animation
+Motion
+Page transitions and UI animation
+3D
+Three.js + React Three Fiber
+Museum environment and interactive exhibits
+3D helpers
+@react-three/drei
+Cameras, controls, loaders and common R3F utilities
+Database
+PostgreSQL via Supabase
+Structured project/content data
+Authentication
+Supabase Auth
+Admin authentication
+Storage
+Supabase Storage
+Project images/videos/assets
+API/backend
+Next.js Server Actions / Route Handlers
+Keep backend simple
+Analytics
+Vercel Analytics + custom event tracking
+Performance + product behavior
+Validation
+Zod
+Runtime validation
+Testing
+Vitest + Playwright
+Unit + browser testing
+Package manager
+pnpm
+Fast, reliable dependency management
+Deployment
+Vercel
+Natural fit for Next.js
+Source control
+GitHub
+Code + CI/CD
+Next.js is particularly suitable because it is a React framework for full-stack applications and its App Router supports modern React features, server components and application routing. îˆ
+
+2. High-Level Architecture
+The system should look like this:
+USER
+â”‚
+â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚   Vercel    â”‚
+â”‚   Hosting   â”‚
+â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚    Next.js      â”‚
+â”‚   Application   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                â”‚                â”‚
+â–¼                â–¼                â–¼
+React UI          3D Engine        Server Logic
+â”‚                â”‚                â”‚
+â”‚                â”‚                â–¼
+â”‚                â”‚          Supabase
+â”‚                â”‚                â”‚
+â”‚                â”‚        â”Œâ”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                â”‚        â”‚               â”‚
+â”‚                â”‚        â–¼               â–¼
+â”‚                â”‚    PostgreSQL       Storage
+â”‚                â”‚
+â–¼                â–¼
+Browser          WebGL
+The important architectural principle:
+The website must remain usable even if the 3D layer fails.
+Three.js should enhance the website, not become the website's single point of failure.
+
+3. Application Architecture
+I'd divide the application into five conceptual layers.
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚              PRESENTATION            â”‚
+â”‚                                      â”‚
+â”‚ React / Tailwind / Motion / R3F      â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚              EXPERIENCE              â”‚
+â”‚                                      â”‚
+â”‚ Museum / Gallery / Exhibits / Lab    â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚              CONTENT                 â”‚
+â”‚                                      â”‚
+â”‚ Projects / Experiments / Biography   â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚              DATA                    â”‚
+â”‚                                      â”‚
+â”‚ PostgreSQL / Supabase                â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚              INFRASTRUCTURE          â”‚
+â”‚                                      â”‚
+â”‚ Vercel / Storage / Analytics         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+This separation is important.
+For example, changing the museum's visual design should not require changing the project database schema.
+
+4. Repository Structure
+I recommend a single Next.js application, not a monorepo.
+For this project, a monorepo would add complexity without providing much value.
+Complete structure
+digital-museum/
+â”‚
+â”œâ”€â”€ .github/
+â”‚   â””â”€â”€ workflows/
+â”‚       â”œâ”€â”€ ci.yml
+â”‚       â””â”€â”€ lighthouse.yml
+â”‚
+â”œâ”€â”€ public/
+â”‚   â”œâ”€â”€ fonts/
+â”‚   â”‚   â””â”€â”€ ...
+â”‚   â”‚
+â”‚   â”œâ”€â”€ images/
+â”‚   â”‚   â”œâ”€â”€ museum/
+â”‚   â”‚   â”‚   â”œâ”€â”€ entrance/
+â”‚   â”‚   â”‚   â”œâ”€â”€ gallery/
+â”‚   â”‚   â”‚   â”œâ”€â”€ archive/
+â”‚   â”‚   â”‚   â””â”€â”€ laboratory/
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ projects/
+â”‚   â”‚   â””â”€â”€ profile/
+â”‚   â”‚
+â”‚   â”œâ”€â”€ icons/
+â”‚   â”‚   â”œâ”€â”€ favicon.svg
+â”‚   â”‚   â””â”€â”€ ...
+â”‚   â”‚
+â”‚   â””â”€â”€ models/
+â”‚       â”œâ”€â”€ museum/
+â”‚       â””â”€â”€ artifacts/
+â”‚
+â”œâ”€â”€ src/
+â”‚   â”‚
+â”‚   â”œâ”€â”€ app/
+â”‚   â”‚   â”œâ”€â”€ layout.tsx
+â”‚   â”‚   â”œâ”€â”€ page.tsx
+â”‚   â”‚   â”œâ”€â”€ globals.css
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ museum/
+â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚
+â”‚   â”‚   â”‚   â”œâ”€â”€ projects/
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ [slug]/
+â”‚   â”‚   â”‚   â”‚       â””â”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚
+â”‚   â”‚   â”‚   â”œâ”€â”€ laboratory/
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ [slug]/
+â”‚   â”‚   â”‚   â”‚       â””â”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚
+â”‚   â”‚   â”‚   â”œâ”€â”€ archivist/
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚
+â”‚   â”‚   â”‚   â”œâ”€â”€ archive/
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”‚
+â”‚   â”‚   â”‚   â””â”€â”€ contact/
+â”‚   â”‚   â”‚       â””â”€â”€ page.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ admin/
+â”‚   â”‚   â”‚   â”œâ”€â”€ layout.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ projects/
+â”‚   â”‚   â”‚   â”œâ”€â”€ experiments/
+â”‚   â”‚   â”‚   â”œâ”€â”€ media/
+â”‚   â”‚   â”‚   â””â”€â”€ settings/
+â”‚   â”‚   â”‚
+â”‚   â”‚   â””â”€â”€ api/
+â”‚   â”‚       â”œâ”€â”€ analytics/
+â”‚   â”‚       â”œâ”€â”€ contact/
+â”‚   â”‚       â””â”€â”€ revalidate/
+â”‚   â”‚
+â”‚   â”œâ”€â”€ components/
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ museum/
+â”‚   â”‚   â”‚   â”œâ”€â”€ MuseumEntrance.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ MuseumShell.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ MuseumNavigation.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ MuseumMap.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ MuseumLoader.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ MuseumTransition.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ gallery/
+â”‚   â”‚   â”‚   â”œâ”€â”€ MainGallery.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ExhibitWall.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ExhibitCard.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ArtifactFrame.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ GalleryLighting.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ projects/
+â”‚   â”‚   â”‚   â”œâ”€â”€ ProjectCard.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ProjectGrid.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ProjectHero.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ProjectMeta.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ProjectGallery.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ProjectCaseStudy.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ ProjectLinks.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ laboratory/
+â”‚   â”‚   â”‚   â”œâ”€â”€ Laboratory.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ExperimentCard.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ ExperimentViewer.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ archivist/
+â”‚   â”‚   â”‚   â”œâ”€â”€ ArchivistHero.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ Biography.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ JourneyTimeline.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ Skills.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ archive/
+â”‚   â”‚   â”‚   â”œâ”€â”€ ArchiveGrid.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ ArchiveItem.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ contact/
+â”‚   â”‚   â”‚   â””â”€â”€ ContactSection.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ three/
+â”‚   â”‚   â”‚   â”œâ”€â”€ MuseumScene.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ CameraController.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ SceneEnvironment.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ FloatingArtifact.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ ParticleField.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ WebGLFallback.tsx
+â”‚   â”‚   â”‚
+â”‚   â”‚   â””â”€â”€ ui/
+â”‚   â”‚       â”œâ”€â”€ Button.tsx
+â”‚   â”‚       â”œâ”€â”€ Modal.tsx
+â”‚   â”‚       â”œâ”€â”€ Badge.tsx
+â”‚   â”‚       â”œâ”€â”€ Dialog.tsx
+â”‚   â”‚       â”œâ”€â”€ Tooltip.tsx
+â”‚   â”‚       â””â”€â”€ LoadingIndicator.tsx
+â”‚   â”‚
+â”‚   â”œâ”€â”€ lib/
+â”‚   â”‚   â”œâ”€â”€ supabase/
+â”‚   â”‚   â”‚   â”œâ”€â”€ client.ts
+â”‚   â”‚   â”‚   â”œâ”€â”€ server.ts
+â”‚   â”‚   â”‚   â””â”€â”€ admin.ts
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ db/
+â”‚   â”‚   â”‚   â”œâ”€â”€ projects.ts
+â”‚   â”‚   â”‚   â”œâ”€â”€ experiments.ts
+â”‚   â”‚   â”‚   â”œâ”€â”€ media.ts
+â”‚   â”‚   â”‚   â””â”€â”€ profile.ts
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ analytics/
+â”‚   â”‚   â”‚   â”œâ”€â”€ events.ts
+â”‚   â”‚   â”‚   â””â”€â”€ tracking.ts
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ validation/
+â”‚   â”‚   â”‚   â”œâ”€â”€ project.ts
+â”‚   â”‚   â”‚   â”œâ”€â”€ experiment.ts
+â”‚   â”‚   â”‚   â””â”€â”€ contact.ts
+â”‚   â”‚   â”‚
+â”‚   â”‚   â”œâ”€â”€ utils/
+â”‚   â”‚   â”‚   â”œâ”€â”€ cn.ts
+â”‚   â”‚   â”‚   â”œâ”€â”€ formatDate.ts
+â”‚   â”‚   â”‚   â””â”€â”€ slugify.ts
+â”‚   â”‚   â”‚
+â”‚   â”‚   â””â”€â”€ constants.ts
+â”‚   â”‚
+â”‚   â”œâ”€â”€ hooks/
+â”‚   â”‚   â”œâ”€â”€ useMuseumNavigation.ts
+â”‚   â”‚   â”œâ”€â”€ useReducedMotion.ts
+â”‚   â”‚   â”œâ”€â”€ useWebGLSupport.ts
+â”‚   â”‚   â”œâ”€â”€ useSoundPreference.ts
+â”‚   â”‚   â””â”€â”€ useAnalytics.ts
+â”‚   â”‚
+â”‚   â”œâ”€â”€ stores/
+â”‚   â”‚   â”œâ”€â”€ museumStore.ts
+â”‚   â”‚   â””â”€â”€ uiStore.ts
+â”‚   â”‚
+â”‚   â”œâ”€â”€ types/
+â”‚   â”‚   â”œâ”€â”€ project.ts
+â”‚   â”‚   â”œâ”€â”€ experiment.ts
+â”‚   â”‚   â”œâ”€â”€ museum.ts
+â”‚   â”‚   â”œâ”€â”€ media.ts
+â”‚   â”‚   â””â”€â”€ analytics.ts
+â”‚   â”‚
+â”‚   â””â”€â”€ config/
+â”‚       â”œâ”€â”€ site.ts
+â”‚       â”œâ”€â”€ navigation.ts
+â”‚       â””â”€â”€ museum.ts
+â”‚
+â”œâ”€â”€ supabase/
+â”‚   â”œâ”€â”€ migrations/
+â”‚   â”‚   â”œâ”€â”€ 001_initial_schema.sql
+â”‚   â”‚   â”œâ”€â”€ 002_project_schema.sql
+â”‚   â”‚   â”œâ”€â”€ 003_media_schema.sql
+â”‚   â”‚   â”œâ”€â”€ 004_analytics_schema.sql
+â”‚   â”‚   â””â”€â”€ 005_rls_policies.sql
+â”‚   â”‚
+â”‚   â”œâ”€â”€ seed.sql
+â”‚   â”‚
+â”‚   â””â”€â”€ tests/
+â”‚       â”œâ”€â”€ projects_rls.test.sql
+â”‚       â”œâ”€â”€ media_rls.test.sql
+â”‚       â””â”€â”€ profiles_rls.test.sql
+â”‚
+â”œâ”€â”€ tests/
+â”‚   â”œâ”€â”€ unit/
+â”‚   â”œâ”€â”€ integration/
+â”‚   â””â”€â”€ e2e/
+â”‚       â”œâ”€â”€ entrance.spec.ts
+â”‚       â”œâ”€â”€ projects.spec.ts
+â”‚       â”œâ”€â”€ laboratory.spec.ts
+â”‚       â””â”€â”€ accessibility.spec.ts
+â”‚
+â”œâ”€â”€ .env.local
+â”œâ”€â”€ .env.example
+â”œâ”€â”€ .gitignore
+â”œâ”€â”€ components.json
+â”œâ”€â”€ eslint.config.mjs
+â”œâ”€â”€ next.config.ts
+â”œâ”€â”€ package.json
+â”œâ”€â”€ pnpm-lock.yaml
+â”œâ”€â”€ postcss.config.mjs
+â”œâ”€â”€ prettier.config.mjs
+â”œâ”€â”€ tailwind.config.ts
+â”œâ”€â”€ tsconfig.json
+â””â”€â”€ README.md
+
+5. Why Next.js?
+Recommendation: Next.js App Router
+This isn't just because Next.js is popular.
+The Digital Museum benefits from:
+SEO
+Project pages should be discoverable by search engines.
+For example:
+/museum/projects/quest-arena
+should have its own:
+title
+description
+Open Graph image
+structured metadata
+Server rendering
+The textual content of project pages doesn't need to wait for WebGL to initialize.
+Image optimization
+Portfolio sites are image-heavy.
+Routing
+The museum naturally has multiple routes.
+Backend capabilities
+You don't need a separate Express/NestJS server for this product.
+Next.js already supports full-stack application development. îˆ
+
+6. Why TypeScript?
+Strong recommendation.
+You will eventually have objects like:
+Project
+Experiment
+Artifact
+Media
+Exhibit
+TimelineEntry
+Without TypeScript, it's easy for fields to drift.
+Example:
+project.currentXP
+versus:
+project.xp
+TypeScript catches these contract problems during development instead of letting them become UI bugs.
+Next.js itself recommends TypeScript for type safety, and its documentation specifically notes the value of type-safe data structures. îˆ
+
+7. Why Tailwind CSS?
+Tailwind should handle the design system, not become the source of every visual decision.
+Define tokens for:
+colors
+spacing
+typography
+shadows
+borders
+transitions
+breakpoints
+Example conceptual palette:
+museum-black
+museum-charcoal
+museum-surface
+museum-white
+museum-muted
+museum-gold
+museum-gold-dim
+museum-border
+This is especially important because the museum needs a consistent visual language.
+
+8. Animation Architecture
+Use Motion for:
+page transitions
+modal transitions
+exhibit hover
+text reveals
+navigation
+UI interactions
+Use Three.js/R3F for:
+3D camera movement
+lighting
+particles
+3D objects
+museum architecture
+Don't use Three.js for a simple opacity animation.
+That's unnecessary complexity.
+
+9. Three.js Architecture
+The 3D layer should be isolated.
+components/
+â””â”€â”€ three/
+â”œâ”€â”€ MuseumScene
+â”œâ”€â”€ CameraController
+â”œâ”€â”€ SceneEnvironment
+â”œâ”€â”€ FloatingArtifact
+â”œâ”€â”€ ParticleField
+â””â”€â”€ WebGLFallback
+The rest of the application shouldn't care how the 3D scene works.
+For example:
+ProjectCard
+â”‚
+â”‚ user clicks
+â–¼
+Project page
+â”‚
+â”œâ”€â”€ HTML content
+â”œâ”€â”€ images
+â””â”€â”€ optional ArtifactViewer
+not:
+Everything
+â†“
+Three.js
+â†“
+Everything breaks if WebGL fails
+
+10. Three.js Performance Rules
+This project can easily become a performance nightmare if you're not careful.
+Rule 1
+Don't create vectors/materials/geometries every frame.
+Rule 2
+Don't run unnecessary useFrame loops.
+Rule 3
+Reuse geometry and materials.
+Rule 4
+Dispose resources when dynamically created.
+Rule 5
+Lazy-load heavy 3D scenes.
+Rule 6
+Don't load every museum model on initial page load.
+Rule 7
+Use lower-poly models where possible.
+Rule 8
+Disable expensive effects on mobile.
+Rule 9
+Respect prefers-reduced-motion.
+Rule 10
+Have a non-WebGL fallback.
+
+11. Database Decision
+Here's where I would not over-engineer.
+The public museum is primarily content.
+You don't need a database just to render:
+Bunny
+About
+Skills
+Projects
+However, I recommend PostgreSQL because you will eventually want to manage:
+projects
+experiments
+media
+timeline
+featured projects
+publishing state
+analytics events
+admin settings
+Supabase gives you PostgreSQL plus Auth, Storage and other infrastructure around it. îˆ
+
+12. Database Schema
+The database should be designed around content, not around the visual museum.
+Core tables:
+profiles
+projects
+project_sections
+technologies
+project_technologies
+media
+experiments
+experiment_technologies
+timeline_entries
+analytics_events
+site_settings
+
+13. profiles
+Stores the museum owner.
+profiles
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+name                TEXT
+display_name        TEXT
+role                TEXT
+bio                 TEXT
+short_bio           TEXT
+avatar_url          TEXT
+email               TEXT
+github_url          TEXT
+linkedin_url        TEXT
+location            TEXT
+created_at          TIMESTAMP
+updated_at          TIMESTAMP
+Relationship
+One profile can own:
+many projects
+many experiments
+many timeline entries
+
+14. projects
+The primary table.
+projects
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+slug                TEXT UNIQUE
+title               TEXT
+artifact_number     INTEGER
+short_description   TEXT
+description         TEXT
+category            TEXT
+year                INTEGER
+status              TEXT
+featured            BOOLEAN
+published           BOOLEAN
+sort_order          INTEGER
+hero_media_id       UUID
+live_url            TEXT
+source_url          TEXT
+created_at          TIMESTAMP
+updated_at          TIMESTAMP
+published_at        TIMESTAMP
+Example
+id:
+a1...
+
+slug:
+quest-arena
+
+title:
+Quest Arena
+
+artifact_number:
+1
+
+category:
+Interactive Web Experience
+
+year:
+2026
+
+featured:
+true
+
+published:
+true
+
+15. Why slug?
+Instead of:
+/projects/18273
+use:
+/projects/quest-arena
+Better for:
+SEO
+sharing
+readability
+analytics
+URLs
+
+16. project_sections
+Don't put the entire case study inside one giant database field.
+Use sections.
+project_sections
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+project_id          UUID FK
+section_type        TEXT
+title               TEXT
+content             TEXT
+sort_order          INTEGER
+created_at          TIMESTAMP
+updated_at          TIMESTAMP
+Possible section_type:
+overview
+problem
+approach
+challenge
+solution
+result
+lesson
+Relationship:
+Project
+â”‚
+â”œâ”€â”€ Section
+â”œâ”€â”€ Section
+â”œâ”€â”€ Section
+â””â”€â”€ Section
+
+17. technologies
+Reusable technology catalogue.
+technologies
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+name                TEXT UNIQUE
+slug                TEXT UNIQUE
+description         TEXT
+icon_url             TEXT
+category            TEXT
+created_at          TIMESTAMP
+Examples:
+React
+Next.js
+TypeScript
+Three.js
+Node.js
+PostgreSQL
+Tailwind
+
+18. project_technologies
+Many-to-many relationship.
+project_technologies
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+project_id          UUID FK
+technology_id       UUID FK
+sort_order          INTEGER
+
+PRIMARY KEY
+(project_id, technology_id)
+Relationship:
+Project
+â”‚
+â”œâ”€â”€ React
+â”œâ”€â”€ Three.js
+â””â”€â”€ TypeScript
+And:
+Three.js
+â”‚
+â”œâ”€â”€ Project A
+â”œâ”€â”€ Project B
+â””â”€â”€ Experiment C
+
+19. media
+Central media table.
+media
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+filename            TEXT
+storage_path        TEXT
+public_url          TEXT
+media_type          TEXT
+mime_type           TEXT
+width               INTEGER
+height              INTEGER
+size_bytes          BIGINT
+alt_text            TEXT
+caption             TEXT
+blurhash            TEXT
+created_at          TIMESTAMP
+Possible media_type:
+image
+video
+model
+audio
+document
+
+20. Why centralize media?
+Without a media table, you'll eventually have this mess:
+project.hero_image
+project.image_1
+project.image_2
+project.image_3
+project.video
+project.gallery_image_1
+...
+That's difficult to maintain.
+Instead:
+Project
+â”‚
+â””â”€â”€ Media
+â”œâ”€â”€ Hero
+â”œâ”€â”€ Gallery
+â”œâ”€â”€ Video
+â””â”€â”€ Thumbnail
+
+21. project_media
+Because projects can have many media items.
+project_media
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+project_id          UUID FK
+media_id            UUID FK
+media_role          TEXT
+sort_order          INTEGER
+
+PRIMARY KEY
+(project_id, media_id)
+media_role:
+hero
+thumbnail
+gallery
+video
+process
+result
+
+22. experiments
+Laboratory content.
+experiments
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+slug                TEXT UNIQUE
+title               TEXT
+experiment_number   INTEGER
+description         TEXT
+status              TEXT
+technology_notes    TEXT
+demo_url            TEXT
+source_url          TEXT
+thumbnail_media_id  UUID
+featured            BOOLEAN
+published           BOOLEAN
+sort_order          INTEGER
+created_at          TIMESTAMP
+updated_at          TIMESTAMP
+Possible statuses:
+experimental
+in-progress
+completed
+archived
+
+23. experiment_technologies
+experiment_technologies
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+experiment_id       UUID FK
+technology_id       UUID FK
+
+PRIMARY KEY
+(experiment_id, technology_id)
+
+24. timeline_entries
+For the Archivist/Journey section.
+timeline_entries
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+profile_id          UUID FK
+year                INTEGER
+title               TEXT
+description         TEXT
+sort_order          INTEGER
+featured            BOOLEAN
+created_at          TIMESTAMP
+updated_at          TIMESTAMP
+Example:
+2023
+Started web development
+
+2024
+Built first serious projects
+
+2025
+Started exploring 3D
+
+2026
+Building Digital Museum
+
+25. site_settings
+Global museum configuration.
+site_settings
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+site_name           TEXT
+tagline             TEXT
+description         TEXT
+logo_media_id       UUID
+favicon_media_id    UUID
+default_og_media_id UUID
+sound_enabled       BOOLEAN
+maintenance_mode    BOOLEAN
+updated_at          TIMESTAMP
+This prevents hardcoding everything inside React.
+
+26. analytics_events
+For portfolio analytics.
+analytics_events
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+id                  UUID PK
+event_name          TEXT
+page_path           TEXT
+project_id          UUID NULL
+experiment_id       UUID NULL
+session_id          TEXT
+device_type         TEXT
+referrer            TEXT
+metadata            JSONB
+created_at          TIMESTAMP
+Examples:
+museum_entered
+
+project_viewed
+
+project_demo_clicked
+
+project_source_clicked
+
+experiment_opened
+
+contact_clicked
+
+museum_map_opened
+Don't collect unnecessary personal information.
+
+27. Database Relationships
+Overall:
+PROFILE
+â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚           â”‚           â”‚
+â–¼           â–¼           â–¼
+PROJECTS   TIMELINE     SETTINGS
+â”‚
+â”Œâ”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                 â”‚
+â–¼                 â–¼
+SECTIONS          MEDIA
+â”‚
+â”‚
+â–¼
+TECHNOLOGIES
+â–²
+â”‚
+â”‚
+EXPERIMENTS
+â”‚
+â–¼
+MEDIA
+More formally:
+profiles
+â”‚
+â”œâ”€â”€< timeline_entries
+â”‚
+â””â”€â”€< projects
+â”‚
+â”œâ”€â”€< project_sections
+â”œâ”€â”€< project_media >â”€â”€ media
+â””â”€â”€< project_technologies >â”€â”€ technologies
+
+experiments
+â”‚
+â”œâ”€â”€< experiment_technologies >â”€â”€ technologies
+â””â”€â”€ thumbnail â”€â”€> media
+
+28. Do We Need Authentication?
+For public visitors:
+No.
+For the owner/admin:
+Yes.
+The architecture should have:
+Public
+â†“
+Read published content
+
+Admin
+â†“
+Authenticate
+â†“
+Manage content
+Supabase Auth is suitable here.
+
+29. Database Security
+This is important even though it's a portfolio.
+All exposed database tables should use Row Level Security with explicit policies. Supabase's current documentation recommends enabling RLS on exposed tables and carefully controlling grants/policies. îˆ
+Public users
+Can read:
+published projects
+published experiments
+published timeline entries
+public profile
+public media
+Cannot:
+insert
+update
+delete
+
+Admin
+Can:
+create
+read
+update
+delete
+publish
+unpublish
+
+30. Critical Security Rule
+Never expose:
+SUPABASE_SERVICE_ROLE_KEY
+to the browser.
+The Supabase service/secret key bypasses normal RLS protections and should remain server-side. Supabase explicitly recommends keeping elevated keys out of frontend code. îˆ
+Browser:
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+Server:
+SUPABASE_SECRET_KEY
+
+31. Environment Variables
+Create:
+.env.local
+and:
+.env.example
+Example:
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Application
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Supabase
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+
+SUPABASE_SECRET_KEY=
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Analytics
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Optional email
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+RESEND_API_KEY=
+CONTACT_EMAIL=
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Optional monitoring
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+NEXT_PUBLIC_SENTRY_DSN=
+SENTRY_AUTH_TOKEN=
+Only variables prefixed with NEXT_PUBLIC_ should be intentionally exposed to the browser.
+
+32. Supabase Storage
+Create buckets such as:
+museum-media
+project-media
+experiment-media
+models
+avatars
+But I would actually start simpler:
+public-media
+private-media
+Then organize paths:
+public-media/
+â”œâ”€â”€ projects/
+â”‚   â”œâ”€â”€ quest-arena/
+â”‚   â””â”€â”€ project-two/
+â”‚
+â”œâ”€â”€ experiments/
+â”‚
+â”œâ”€â”€ museum/
+â”‚
+â””â”€â”€ profile/
+Supabase Storage integrates with its authorization model and supports RLS-based access control. îˆ
+
+33. Static vs Database Content
+This is a major architecture decision.
+Not everything needs to come from PostgreSQL.
+Static
+Keep these in code:
+museum navigation
+design tokens
+animation configuration
+3D scene configuration
+application constants
+Database
+Store:
+projects
+experiments
+timeline
+profile
+media
+published state
+This gives you the best balance.
+
+34. Data Fetching Strategy
+For public content:
+Browser
+â†“
+Next.js Server Component
+â†“
+Supabase
+â†“
+HTML
+â†“
+Browser
+The initial page doesn't need to make a dozen client-side API calls.
+For interactive components:
+Server-rendered content
++
+Client-side interaction
++
+Optional WebGL
+This is much better for performance.
+
+35. Project Page Architecture
+A project page should look conceptually like:
+ProjectPage
+â”‚
+â”œâ”€â”€ ProjectHero
+â”‚
+â”œâ”€â”€ ProjectMeta
+â”‚
+â”œâ”€â”€ ProjectOverview
+â”‚
+â”œâ”€â”€ ProjectGallery
+â”‚
+â”œâ”€â”€ ProjectProblem
+â”‚
+â”œâ”€â”€ ProjectApproach
+â”‚
+â”œâ”€â”€ ProjectChallenges
+â”‚
+â”œâ”€â”€ ProjectSolution
+â”‚
+â”œâ”€â”€ ProjectResult
+â”‚
+â”œâ”€â”€ TechnologyList
+â”‚
+â”œâ”€â”€ LiveDemo
+â”‚
+â”œâ”€â”€ SourceLink
+â”‚
+â””â”€â”€ RelatedProjects
+Don't make one giant ProjectPage.tsx.
+
+36. Museum Scene Architecture
+The 3D scene should be modular.
+MuseumScene
+â”‚
+â”œâ”€â”€ SceneEnvironment
+â”‚
+â”œâ”€â”€ CameraController
+â”‚
+â”œâ”€â”€ Lighting
+â”‚
+â”œâ”€â”€ Architecture
+â”‚   â”œâ”€â”€ Floor
+â”‚   â”œâ”€â”€ Walls
+â”‚   â”œâ”€â”€ Ceiling
+â”‚   â””â”€â”€ Doors
+â”‚
+â”œâ”€â”€ Exhibits
+â”‚   â”œâ”€â”€ Artifact
+â”‚   â”œâ”€â”€ Frame
+â”‚   â””â”€â”€ Label
+â”‚
+â””â”€â”€ Effects
+â”œâ”€â”€ Particles
+â””â”€â”€ AmbientLight
+This means you can replace the entire museum architecture later without rewriting your project data layer.
+
+37. Responsive Architecture
+Desktop:
+Immersive gallery
++
+3D
++
+large artwork
++
+spatial navigation
+Tablet:
+Reduced 3D
++
+gallery cards
++
+simplified navigation
+Mobile:
+2D museum catalogue
++
+large project cards
++
+simple transitions
+Do not try to squeeze a desktop 3D museum into a 390px screen.
+That will create a terrible experience.
+
+38. Reduced Motion
+Create:
+useReducedMotion()
+which checks:
+prefers-reduced-motion
+If enabled:
+NO camera fly-through
+NO particle movement
+NO dramatic page transitions
+NO unnecessary parallax
+The information remains identical.
+
+39. WebGL Fallback
+Create:
+WebGLFallback.tsx
+If WebGL isn't available:
+3D Museum
+â†“
+2D Gallery
+The visitor should never see:
+â€œYour browser doesn't support this experience.â€
+followed by a dead end.
+Instead, they should simply get the accessible version.
+
+40. Routing
+Recommended routes:
+/
+Landing page.
+/museum
+Main museum.
+/museum/projects
+Project collection.
+/museum/projects/[slug]
+Individual project.
+/museum/laboratory
+Experiments.
+/museum/laboratory/[slug]
+Individual experiment.
+/museum/archivist
+About.
+/museum/archive
+Older work.
+/museum/contact
+Contact.
+Admin:
+/admin
+/admin/projects
+/admin/projects/[id]
+/admin/experiments
+/admin/media
+/admin/settings
+
+41. API Architecture
+Don't create an API endpoint for everything.
+For public data, Next.js Server Components can directly access your data layer.
+Use Route Handlers when you genuinely need an HTTP endpoint.
+Example:
+/api/contact
+/api/analytics
+/api/revalidate
+This keeps the architecture small.
+
+42. Contact Form
+If you add a contact form:
+Browser
+â†“
+/api/contact
+â†“
+Zod validation
+â†“
+Rate limiting
+â†“
+Email provider
+â†“
+Your inbox
+Never trust browser input.
+Validate it server-side.
+
+43. Analytics Architecture
+Track meaningful events rather than every mouse movement.
+Events
+museum_entered
+project_viewed
+project_demo_clicked
+project_source_clicked
+experiment_viewed
+contact_clicked
+github_clicked
+linkedin_clicked
+Don't track:
+mouse_x
+mouse_y
+every_scroll_pixel
+every_frame
+cursor_position
+That data is useless for your product decision-making and creates unnecessary privacy/performance overhead.
+
+44. Caching
+Public project data changes infrequently.
+Therefore:
+Project content
+â†“
+Cache
+â†“
+Visitors
+When you publish a new project:
+Admin
+â†“
+Update DB
+â†“
+Revalidate page
+â†“
+New content becomes available
+This is much more efficient than querying the database for every visitor request.
+
+45. SEO Architecture
+Each project needs metadata.
+Example:
+Title:
+Quest Arena â€” Interactive Web Experience | Bunny
+
+Description:
+An interactive web experience built with React,
+Three.js and TypeScript.
+
+OG Image:
+quest-arena-cover.webp
+Also generate:
+sitemap.xml
+robots.txt
+And use:
+schema.org
+where appropriate.
+
+46. Image Strategy
+Images will probably be one of the biggest performance bottlenecks.
+Use:
+WebP
+AVIF
+where appropriate.
+Have multiple sizes:
+thumbnail
+small
+medium
+large
+original
+Don't send a 5 MB image when a 500 KB version will work.
+
+47. 3D Asset Strategy
+For 3D:
+Prefer:
+.glb
+over huge source formats.
+Structure:
+models/
+â”œâ”€â”€ museum/
+â”‚   â”œâ”€â”€ gallery.glb
+â”‚   â””â”€â”€ entrance.glb
+â”‚
+â””â”€â”€ artifacts/
+â”œâ”€â”€ artifact-001.glb
+â””â”€â”€ artifact-002.glb
+Lazy load models.
+Don't put every artifact in the initial bundle.
+
+48. State Management
+Don't introduce Redux.
+You don't need it.
+Use:
+React state
+For local UI.
+URL state
+For:
+selected project
+filters
+navigation
+Zustand
+Only for genuinely global client state such as:
+museum mode
+sound preference
+current exhibit
+UI overlays
+Keep it tiny.
+
+49. Validation
+Use Zod.
+Example:
+ProjectInput
+â”œâ”€â”€ title
+â”œâ”€â”€ slug
+â”œâ”€â”€ description
+â”œâ”€â”€ category
+â”œâ”€â”€ year
+â”œâ”€â”€ URLs
+â””â”€â”€ publishing state
+Validate before:
+database write
+API request
+admin submission
+
+50. Testing Strategy
+Unit tests
+Test:
+utility functions
+validation
+content transformation
+analytics event generation
+Integration tests
+Test:
+database queries
+publishing logic
+permissions
+E2E
+Use Playwright.
+Critical tests:
+Visitor opens museum
+â†“
+Clicks Enter
+â†“
+Views project
+â†“
+Opens case study
+â†“
+Clicks live project
+Also:
+Mobile visitor
+â†“
+opens museum
+â†“
+navigates project
+â†“
+contact
+
+51. RLS Testing
+Because Supabase's security model relies heavily on database policies, test them directly.
+Supabase recommends creating policy tests and running its database test suite when securing exposed tables. îˆ
+Test:
+Anonymous:
+SELECT published project â†’ ALLOW
+
+Anonymous:
+UPDATE project â†’ DENY
+
+Anonymous:
+DELETE project â†’ DENY
+
+Admin:
+SELECT project â†’ ALLOW
+
+Admin:
+UPDATE project â†’ ALLOW
+
+52. Deployment Architecture
+Recommended:
+GitHub
+â”‚
+â–¼
+Vercel
+â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                  â”‚
+Preview            Production
+â”‚                  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+â–¼
+Supabase
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”
+â”‚       â”‚       â”‚
+Postgres  Auth   Storage
+Vercel handles the Next.js deployment.
+Supabase handles:
+database
+authentication
+media
+server-side infrastructure
+
+53. Environment Separation
+Have:
+Development
+â†“
+Preview
+â†“
+Production
+Ideally each environment gets its own Supabase project/database.
+At minimum:
+development database
+production database
+Don't experiment against production.
+
+54. Configuration Files
+next.config.ts
+Configure:
+image domains
+headers
+redirects
+experimental features only when necessary
+tsconfig.json
+Use strict mode:
+strict: true
+ESLint
+Enforce:
+React rules
+accessibility rules
+TypeScript rules
+import consistency
+Prettier
+Keep formatting automated.
+
+55. Package Structure
+A reasonable initial dependency set:
+next
+react
+react-dom
+typescript
+
+tailwindcss
+
+motion
+
+three
+@react-three/fiber
+@react-three/drei
+
+@supabase/ssr
+@supabase/supabase-js
+
+zod
+
+zustand
+
+lucide-react
+
+vitest
+playwright
+Don't install 50 libraries on day one.
+Every dependency should have a reason.
+
+56. What I Would NOT Add
+At the beginning, avoid:
+Redux
+GraphQL
+tRPC
+Redis
+Kafka
+Docker
+Kubernetes
+Microservices
+Separate Express server
+Separate Node backend
+Headless CMS
+Elasticsearch
+Vector database
+AI agent system
+None of these solve an actual V1 problem.
+The architecture should be:
+boring underneath, extraordinary on top.
+That's exactly what you want.
+
+57. Recommended MVP Architecture
+If we're being ruthless about scope:
+NEXT.JS
+â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                       â”‚
+React UI                R3F Scene
+â”‚                       â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+Supabase
+â”Œâ”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”
+â”‚    â”‚     â”‚
+Postgres Auth Storage
+That's it.
+No separate backend.
+No microservices.
+No CMS.
+No complicated infrastructure.
+
+58. V1 Database
+If we want to be even more aggressive, V1 can launch with only:
+profiles
+projects
+project_sections
+technologies
+project_technologies
+media
+project_media
+experiments
+experiment_technologies
+timeline_entries
+Add:
+analytics_events
+site_settings
+when needed.
+
+59. Recommended Build Order
+This is the part I'd follow very closely.
+Phase 1 â€” Foundation
+Next.js
+TypeScript
+Tailwind
+routing
+design tokens
+â†“
+Phase 2 â€” Content
+Project schema
+Project pages
+Case studies
+About
+Timeline
+Laboratory
+â†“
+Phase 3 â€” Core Museum
+Entrance
+Gallery
+Exhibits
+Navigation
+Transitions
+â†“
+Phase 4 â€” 3D
+MuseumScene
+Camera
+Architecture
+Lighting
+Artifacts
+â†“
+Phase 5 â€” Performance
+lazy loading
+image optimization
+3D optimization
+WebGL fallback
+mobile simplification
+â†“
+Phase 6 â€” Admin
+Authentication
+Project management
+Media management
+Publishing
+â†“
+Phase 7 â€” Analytics + Launch
+analytics
+SEO
+monitoring
+E2E testing
+production
+
+60. Most Important Architectural Decision
+If I were reviewing this project as a senior architect, this is the rule I'd put at the top of the repository README:
+The content must never depend on the 3D experience.
+Meaning:
+Project data
+â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–º HTML / accessible UI
+â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–º 3D presentation
+Not:
+Project data
+â†“
+Three.js
+â†“
+Maybe content appears
+This gives you:
+SEO
+accessibility
+mobile support
+performance
+maintainability
+easier debugging
+easier future redesign
+And it means that someday you can completely replace the futuristic museum with another visual concept without rebuilding your entire content system.
+
+61. Final Architecture
+The final system I'd recommend is:
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚       VISITOR        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚       VERCEL        â”‚
+â”‚      Next.js         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚               â”‚               â”‚
+â–¼               â–¼               â–¼
+React UI          Motion            R3F
+â”‚                               â”‚
+â”‚                         Three.js
+â”‚                               â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+â”‚
+â–¼
+DATA ACCESS
+â”‚
+â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ SUPABASE  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ Postgres  â”‚
+â”‚ Auth      â”‚
+â”‚ Storage   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+The philosophy:
+Next.js handles the application.
+React handles the interface.
+Motion handles interaction.
+Three.js handles immersion.
+PostgreSQL handles structured content.
+Supabase handles backend infrastructure.
+Vercel handles deployment.
+And most importantly:
+The database describes the museum's collection. React presents the collection. Three.js makes the presentation memorable.
+

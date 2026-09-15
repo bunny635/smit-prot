@@ -1,0 +1,1428 @@
+﻿Frontend Specification Document â€” The Digital Museum
+Version: 1.0Product: The Digital MuseumFrontend: Next.js + React + TypeScriptVisual direction: Futuristic digital museum / premium interactive portfolioPrimary principle: The museum creates the atmosphere; the portfolio delivers the information.
+The frontend should feel like entering a beautifully designed digital exhibition rather than opening a conventional portfolio. However, users must always be able to understand who you are, what you built, and how to contact you without having to solve a 3D puzzle first.
+For the technical baseline, this specification assumes the architecture we established earlier: Next.js/React, TypeScript, Tailwind, Motion, Three.js/React Three Fiber, Supabase, Vercel Analytics/Speed Insights, with Resend and Sentry treated as optional integrations.
+
+1. Product Experience
+1.1 Design statement
+The Digital Museum is a dark, cinematic, futuristic gallery where projects are treated as digital artifacts and the creator is presented as the curator/archivist of the collection.
+The experience should feel:
+Quiet â†’ Curious â†’ Cinematic â†’ Premium â†’ Interactive â†’ Informative
+Not:
+Loud â†’ Neon â†’ Game-like â†’ Over-animated â†’ Difficult to navigate
+The visual language should reference contemporary art galleries and architectural spaces, not literal historical museums.
+
+2. UX Principles
+Principle 1 â€” Content before spectacle
+A visitor should be able to reach a project quickly.
+Principle 2 â€” Every animation has a purpose
+Animation should communicate:
+hierarchy, 
+continuity, 
+state, 
+spatial relationships, 
+discovery. 
+It should not exist merely because an animation library is available.
+Principle 3 â€” 3D is progressive enhancement
+The 3D museum is an enhancement over a fully functional web experience.
+If WebGL is unavailable, the user still gets the complete portfolio.
+Principle 4 â€” One visual system everywhere
+The entrance, project pages, laboratory, archive and admin interface should feel like parts of one product.
+Principle 5 â€” Museum navigation should remain recognizable as web navigation
+A visitor should never wonder:
+â€œHow the hell do I get back?â€ ðŸ˜­
+Persistent navigation and predictable back behavior are mandatory.
+
+3. Visual Identity
+3.1 Color palette
+The primary palette should be restrained.
+Core colors
+Token
+Hex
+Usage
+museum-black
+#080808
+Main background
+museum-charcoal
+#111111
+Secondary surfaces
+museum-surface
+#171717
+Cards / panels
+museum-surface-2
+#202020
+Elevated surfaces
+museum-white
+#F5F3EE
+Primary text
+museum-muted
+#A7A39A
+Secondary text
+museum-dim
+#6F6C66
+Tertiary text
+museum-gold
+#D8B45A
+Primary accent
+museum-gold-bright
+#F2D47C
+Hover / highlight
+museum-gold-dim
+#8D7437
+Borders / subtle accents
+museum-border
+#2C2C29
+Borders
+museum-success
+#72A67A
+Success
+museum-error
+#C97878
+Error
+museum-warning
+#C8A35A
+Warning
+Color ratio
+The intended visual weighting:
+â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ  Black / charcoal
+â–ˆâ–ˆâ–ˆâ–ˆ                 White / neutral
+â–ˆâ–ˆ                   Gold
+â–ˆ                    Status colors
+Gold should be an accent, not the background of half the website.
+
+4. Semantic Color Tokens
+Do not hard-code hex values throughout components.
+Use semantic tokens.
+bg-page
+bg-surface
+bg-elevated
+text-primary
+text-secondary
+text-muted
+border-subtle
+accent
+accent-hover
+success
+error
+warning
+That means changing the museum's visual identity later becomes one design-system change rather than a 400-file cleanup operation.
+
+5. Typography
+I recommend a two-font system.
+Display font
+DM Serif Display
+Use for:
+museum title 
+exhibit titles 
+major editorial headings 
+chapter/room names 
+It gives the museum some cultural/editorial character without becoming old-fashioned.
+Interface/body font
+Inter
+Use for:
+navigation 
+body copy 
+metadata 
+buttons 
+labels 
+forms 
+Inter is excellent for dense UI and long project descriptions.
+
+6. Typography Scale
+Use a responsive type scale.
+Token
+Desktop
+Mobile
+Usage
+display-xl
+96px
+52px
+Museum title
+display-lg
+72px
+44px
+Major heading
+display-md
+56px
+36px
+Section heading
+heading-lg
+40px
+30px
+Project title
+heading-md
+30px
+24px
+Subheading
+heading-sm
+24px
+20px
+Card title
+body-lg
+20px
+18px
+Intro copy
+body-md
+16px
+16px
+Standard body
+body-sm
+14px
+14px
+Metadata
+caption
+12px
+12px
+Labels
+Line heights
+Large typography:
+0.95â€“1.05
+Body:
+1.5â€“1.7
+Never use extremely tight line-height for paragraphs.
+
+7. Typography Rules
+Museum/exhibit headings can be expressive.
+Body content should remain highly readable.
+Example:
+ARTIFACT 001                  â† Inter / small
+QUEST ARENA                  â† DM Serif Display
+Interactive Web Experience  â† Inter / muted
+
+A short explanation...
+This combination creates hierarchy immediately.
+
+8. Spacing System
+Use a 4px base grid.
+4
+8
+12
+16
+20
+24
+32
+40
+48
+64
+80
+96
+128
+160
+192
+Common usage
+Spacing
+Usage
+4px
+Icon/text micro spacing
+8px
+Tight internal spacing
+12px
+Labels
+16px
+Standard component padding
+24px
+Card padding
+32px
+Component groups
+48px
+Section spacing
+64px
+Major section spacing
+96px
+Large editorial spacing
+128px+
+Museum-scale visual separation
+
+9. Layout System
+Maximum content width
+max-width: 1440px
+For textual content:
+max-width: 720â€“800px
+Don't make project descriptions span the entire screen.
+
+10. Grid
+Desktop:
+12-column grid
+Tablet:
+8-column grid
+Mobile:
+4-column grid
+Desktop gutters
+Approximately:
+32â€“64px
+depending on viewport size.
+
+11. Museum Spatial Grid
+The 3D environment should conceptually map to the same 12-column visual system.
+This makes the 3D and 2D versions feel like the same product.
+â”Œâ”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”¬â”€â”€â”€â”
+â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚   â”‚
+â””â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”´â”€â”€â”€â”˜
+
+12. Border Radius
+The museum should not look like a generic SaaS dashboard.
+Use subtle radius values:
+small:   4px
+medium:  8px
+large:   12px
+pill:    999px
+Default
+Cards:
+8px
+Buttons:
+6px
+Inputs:
+6px
+Dialogs:
+12px
+3D exhibit frames can use their own architectural geometry.
+
+13. Shadows
+Use restrained shadows.
+Instead of:
+huge black glow
+prefer:
+0 12px 40px rgba(0,0,0,0.25)
+The museum should get depth primarily through:
+lighting, 
+contrast, 
+borders, 
+spacing, 
+gradients, 
+3D perspective. 
+
+14. Texture
+Use extremely subtle texture.
+Possible:
+fine grain 
+paper-like noise 
+soft vignette 
+Opacity:
+2â€“6%
+If the user can clearly see the texture before noticing the artwork, it's too strong.
+
+15. Iconography
+Use Lucide React for interface icons.
+Use icons for:
+arrow 
+close 
+menu 
+external link 
+GitHub 
+LinkedIn 
+sound 
+navigation 
+back 
+fullscreen 
+Do not mix:
+Lucide + FontAwesome + random SVG packs
+Choose one system.
+
+16. Buttons
+Buttons should feel like museum controls, not SaaS dashboard buttons.
+Primary button
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚     ENTER MUSEUM   â†’    â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+Style:
+background: museum-white 
+text: museum-black 
+6px radius 
+14â€“16px font 
+12px Ã— 20px padding 
+subtle scale on hover 
+Hover
+background â†’ museum-gold
+transform â†’ translateY(-1px)
+
+17. Secondary Button
+Transparent:
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚     VIEW EXHIBIT  â†’     â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+Style:
+transparent background 
+1px museum-border 
+museum-white text 
+gold border/text on hover 
+
+18. Text Button
+For lightweight actions:
+VIEW ARCHIVE â†’
+No box.
+Use:
+underline/underline-offset 
+arrow translation 
+subtle color change 
+
+19. Disabled Button
+Do not simply make it 50% transparent.
+Use:
+background: #1A1A1A
+color: #66635D
+cursor: not-allowed
+No hover animation.
+
+20. Button States
+Every interactive button must support:
+Default
+Hover
+Focus
+Active
+Disabled
+Loading
+Example:
+DEFAULT
+ENTER MUSEUM â†’
+
+HOVER
+ENTER MUSEUM   â†—
+
+LOADING
+ENTERING...
+Keyboard focus must remain visually obvious.
+
+21. Inputs
+Inputs should look like archival metadata fields.
+Example:
+EMAIL
+
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ you@example.com                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+Style
+background: museum-surface
+border: 1px museum-border
+color: museum-white
+radius: 6px
+height: 48px
+padding: 0 16px
+Focus:
+border-color: museum-gold
+box-shadow: 0 0 0 3px rgba(216,180,90,.12)
+
+22. Input Validation
+Invalid:
+EMAIL
+
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ bunny@                          â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+Please enter a valid email address.
+Never depend on color alone.
+Error state should include:
+icon 
+text 
+border treatment 
+accessible error association 
+
+23. Textarea
+Contact messages:
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                                 â”‚
+â”‚ Tell me about your project...   â”‚
+â”‚                                 â”‚
+â”‚                                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+Minimum height:
+160px
+
+24. Cards
+Cards should represent exhibits, not generic SaaS cards.
+Exhibit Card
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                                     â”‚
+â”‚             IMAGE                   â”‚
+â”‚                                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ ARTIFACT 001                        â”‚
+â”‚                                     â”‚
+â”‚ QUEST ARENA                         â”‚
+â”‚ Interactive Web Experience          â”‚
+â”‚                                     â”‚
+â”‚ React Â· Three.js Â· TypeScript       â”‚
+â”‚                                     â”‚
+â”‚ VIEW EXHIBIT â†’                      â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+
+25. Exhibit Card Interaction
+On hover:
+image scales approximately 1.02 
+border becomes slightly brighter 
+title shifts 2px 
+arrow moves 4px 
+subtle ambient glow 
+Do not:
+rotate the card, 
+make it bounce, 
+add excessive particles. 
+
+26. Project Hero
+Project page:
+ARTIFACT 001
+
+QUEST ARENA
+
+Interactive Web Experience
+
+2026
+Then immediately:
+large visual
+Then:
+overview
+The visitor should understand the project within the first viewport.
+
+27. Metadata Chips
+Technologies can use understated chips:
+[ React ] [ Three.js ] [ TypeScript ]
+Style:
+transparent 
+subtle border 
+small text 
+4â€“6px radius 
+low visual weight 
+Technology chips should not overpower the project title.
+
+28. Modals
+Use modals for:
+museum map 
+image preview 
+quick project information 
+settings 
+admin confirmation dialogs 
+Do not use modals for entire project case studies.
+Those deserve URLs.
+
+29. Modal Specification
+Backdrop:
+rgba(0,0,0,.72)
+
+Panel:
+#111111
+
+Border:
+#2C2C29
+
+Radius:
+12px
+
+Max width:
+720px
+Animation:
+opacity 0 â†’ 1
+scale .97 â†’ 1
+Duration:
+180â€“240ms
+Modal must support:
+Escape 
+click outside where safe 
+keyboard focus trap 
+close button 
+mobile full-screen fallback where appropriate 
+
+30. Navigation
+Desktop:
+BUNNY / MUSEUM
+
+COLLECTION
+ABOUT
+LAB
+ARCHIVE
+CONTACT
+
+                          SOUND â—
+Keep it persistent.
+
+31. Mobile Navigation
+Mobile:
+BUNNY / MUSEUM                         â˜°
+Open:
+COLLECTION
+ABOUT
+LAB
+ARCHIVE
+CONTACT
+Full-screen overlay.
+No tiny hamburger menus inside the 3D environment.
+
+32. Museum Entrance UI
+The entrance is the hero.
+              THE
+
+          DIGITAL MUSEUM
+
+               OF
+
+              BUNNY
+
+     A COLLECTION OF DIGITAL WORKS
+
+
+          [ ENTER MUSEUM ]
+Background
+dark architectural space 
+extremely subtle motion 
+architectural light 
+optional particles 
+Entrance animation
+Logo fade-in
+â†“
+subtitle fade
+â†“
+button reveal
+â†“
+ambient movement
+Do not delay interaction just to make the intro cinematic.
+
+33. Gallery UI
+Main gallery has three navigation levels:
+Global navigation
+Where am I?
+Room navigation
+What section am I in?
+Exhibit navigation
+What project am I viewing?
+This hierarchy keeps the immersive experience understandable.
+
+34. Breadcrumbs
+Project pages should have a tiny breadcrumb:
+MUSEUM / COLLECTION / ARTIFACT 001
+Use muted typography.
+Clicking:
+MUSEUM
+returns to the museum.
+
+35. Laboratory UI
+The Laboratory should visually diverge slightly from the main gallery.
+Use:
+technical labels 
+experiment numbers 
+status indicators 
+grid-based layouts 
+slightly more UI-like presentation 
+Example:
+EXPERIMENT 017
+
+PARTICLE FIELD
+
+STATUS
+â— RUNNING
+
+TECHNOLOGY
+Three.js
+
+[ RUN EXPERIMENT ]
+
+36. Archivist UI
+The Archivist page should be quieter.
+Large portrait/visual:
+THE ARCHIVIST
+
+BUNNY
+
+STUDENT Â· DEVELOPER Â· CREATOR
+Then:
+BIOGRAPHY
+JOURNEY
+SKILLS
+CURRENTLY BUILDING
+
+37. Archive UI
+The Archive should behave like a catalogue.
+2026
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+001  QUEST ARENA
+002  DIGITAL VOID
+003  MEMORY
+
+2025
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+004  ...
+005  ...
+This gives the collection historical structure.
+
+38. Contact UI
+Keep it incredibly simple.
+LET'S CREATE SOMETHING.
+
+Have an idea?
+Want to work together?
+
+[ YOUR NAME ]
+
+[ YOUR EMAIL ]
+
+[ MESSAGE ]
+
+[ SEND TRANSMISSION ]
+Alternative contact paths:
+GitHub
+LinkedIn
+Email
+
+39. Motion System
+Create named motion tokens rather than scattering arbitrary durations across the codebase.
+Micro
+120â€“180ms
+Buttons, icons, hover.
+Standard
+200â€“300ms
+Cards, modals, small UI transitions.
+Editorial
+400â€“700ms
+Large headings, section transitions.
+Cinematic
+800â€“1400ms
+Museum entrance / major 3D movement.
+
+40. Easing
+Default UI:
+ease-out
+Cinematic:
+custom cubic-bezier
+Avoid constant linear animations except:
+loading indicators 
+continuous environmental effects 
+carefully controlled looping background motion. 
+
+41. Scroll Behavior
+Avoid forcing users through a cinematic scroll lock.
+Normal webpage scrolling should remain possible.
+Museum transitions can react to scroll, but shouldn't trap visitors in a 15-second animation.
+
+42. 3D Interaction
+Desktop 3D:
+subtle camera movement 
+artifact hover 
+exhibit focus 
+room transitions 
+Interaction should use large, obvious targets.
+Avoid:
+tiny floating clickable object 800px away
+Prefer:
+artwork + clearly associated hit area + label
+
+43. 3D Performance Modes
+Create three modes:
+Full
+Desktop, capable hardware.
+Reduced
+Tablet / moderate hardware.
+Minimal
+Mobile / performance constrained.
+Conceptually:
+FULL
+Particles âœ“
+Shadows âœ“
+Post processing âœ“
+
+REDUCED
+Particles â†“
+Shadows â†“
+Post processing âœ•
+
+MINIMAL
+3D architecture only
+Static lighting
+No particles
+
+44. WebGL Fallback
+The fallback should not look like an error page.
+It should look like a deliberate alternate museum experience:
+THE DIGITAL MUSEUM
+
+[ COLLECTION ]
+
+Featured Exhibits
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚        â”‚ â”‚        â”‚
+â”‚ ART 01 â”‚ â”‚ ART 02 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+Same colors, typography, spacing and navigation.
+
+45. Loading Experience
+Museum loading should be branded.
+Instead of:
+Loading...
+Use:
+THE DIGITAL MUSEUM
+
+CURATING COLLECTION...
+
+â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–‘â–‘â–‘â–‘â–‘â–‘ 64%
+But keep loading screens short.
+Don't invent fake progress if the actual loading isn't measurable.
+
+46. Empty States
+No projects
+THE COLLECTION IS BEING CURATED.
+
+New exhibits will appear here soon.
+No experiments
+THE LAB IS CURRENTLY QUIET.
+
+New experiments are being prepared.
+No archive
+THE ARCHIVE HAS NOT YET BEEN OPENED.
+
+47. Error States
+Generic public:
+EXHIBIT UNAVAILABLE
+
+We couldn't load this exhibit.
+
+[ RETURN TO COLLECTION ]
+Technical failure:
+THE GALLERY ENCOUNTERED A PROBLEM
+
+The collection is still available.
+
+[ OPEN CATALOGUE ]
+
+48. Toasts
+Use sparingly.
+Example:
+âœ“ Link copied to clipboard
+Duration:
+3â€“4 seconds
+Don't toast everything.
+
+49. Accessibility
+This is a must-have, not a future luxury.
+Requirements:
+semantic HTML 
+keyboard navigation 
+visible focus 
+alt text 
+meaningful headings 
+accessible labels 
+reduced motion 
+sufficient contrast 
+no color-only meaning 
+dialogs with focus management 
+44px-ish minimum touch targets where practical 
+For the museum metaphor specifically:
+Every 3D interaction should have a 2D equivalent.
+
+50. API & Integration Specification
+The frontend should use SDKs wherever possible rather than manually constructing third-party HTTP requests.
+The core integrations are:
+Service
+Required?
+Purpose
+Supabase Auth
+Yes
+Admin authentication
+Supabase PostgreSQL/Data API
+Yes
+Content
+Supabase Storage
+Yes
+Images/video/3D assets
+Vercel Web Analytics
+Recommended
+Visitor behavior
+Vercel Speed Insights
+Recommended
+Real-world performance
+Resend
+Optional but recommended
+Contact email
+Sentry
+Optional but recommended
+Error monitoring
+
+51. Integration A â€” Supabase Auth
+Purpose
+Handles admin authentication.
+Supabase Auth supports password authentication and MFA; authenticated database access is integrated with RLS. 
+Frontend SDK
+@supabase/supabase-js
+@supabase/ssr
+
+Sign in
+Use:
+supabase.auth.signInWithPassword({
+  email,
+  password
+})
+Supabase documents this method as the current JavaScript API for email/password authentication. 
+Data sent
+{
+  "email": "admin@example.com",
+  "password": "********"
+}
+Response
+On success:
+user
+session
+On failure:
+error
+The frontend converts that into a generic human-readable message.
+
+52. Supabase MFA
+For admin MFA, use the TOTP flow.
+Supabase currently supports TOTP and phone-based second factors; for this product, TOTP through an authenticator application is the cleaner choice. 
+Enrollment
+supabase.auth.mfa.enroll({
+  factorType: 'totp',
+  friendlyName: 'Museum Admin'
+})
+The API returns information including:
+factor ID
+QR code
+secret
+URI
+The user verifies the factor using a challenge. 
+Login
+password
+â†“
+MFA challenge
+â†“
+TOTP code
+â†“
+AAL2 session
+â†“
+Admin
+
+53. Password Reset
+Use:
+supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: '/admin/update-password'
+})
+Supabase documents this PKCE-compatible password-reset flow. 
+The UI should say:
+If an account exists for that email, we've sent instructions.
+Don't reveal whether the address exists.
+
+54. Sign Out
+Use:
+supabase.auth.signOut({
+  scope: 'local'
+})
+For this product, local is generally preferable so logging out on one browser doesn't unexpectedly terminate every other admin session. Supabase's current JavaScript documentation notes that the default scope is global and explains the local/others alternatives. 
+
+55. Getting the Current User
+For trusted server-side identity checks, use Supabase's server-side session/user APIs rather than trusting client-provided user data.
+This matters because Supabase distinguishes local session data from verified user information. 
+
+56. Supabase Database Integration
+Public content can use:
+supabase
+  .from('projects')
+  .select(...)
+Supabase's JavaScript SDK supports relational selects and filters through the generated data API. 
+Example public query
+Conceptually:
+projects
+WHERE published = true
+ORDER BY sort_order
+Data sent
+{
+  "table": "projects",
+  "filters": {
+    "published": true
+  }
+}
+Expected response
+{
+  "data": [
+    {
+      "id": "...",
+      "slug": "quest-arena",
+      "title": "Quest Arena",
+      "year": 2026,
+      "featured": true
+    }
+  ],
+  "error": null
+}
+The actual SDK handles the HTTP layer.
+
+57. Supabase Database â€” Project Detail
+Query:
+projects
+WHERE slug = [slug]
+AND published = true
+Return:
+project
+sections
+technologies
+media
+The frontend should treat:
+data = null
+as:
+Exhibit not found.
+
+58. Supabase Database â€” Admin Create
+Use:
+supabase
+  .from('projects')
+  .insert(project)
+Supabase's current JavaScript API supports insert() and allows .select() when the newly created record needs to be returned. 
+Request
+{
+  "title": "Quest Arena",
+  "slug": "quest-arena",
+  "year": 2026,
+  "published": false
+}
+Response
+created project
+OR
+error
+
+59. Supabase Storage
+Use Storage for:
+project images 
+thumbnails 
+project videos 
+3D models 
+profile media 
+Supabase's current Storage upload API takes a bucket, path, file body and optional metadata such as content type, cache control and upsert behavior. 
+Upload
+supabase
+  .storage
+  .from('public-media')
+  .upload(path, file, {
+    contentType,
+    cacheControl: '3600',
+    upsert: false
+  })
+Example path
+projects/quest-arena/hero.webp
+Data sent
+file binary
+contentType
+cacheControl
+path
+Expected response
+path
+id / metadata where provided
+error
+
+60. Storage Rules
+Frontend validation:
+image formats
+file size
+dimensions
+Server/database/storage policy:
+admin can upload
+visitor cannot upload
+Public media is readable.
+Draft/private media is protected.
+Never trust the filename extension alone.
+
+61. Vercel Web Analytics
+Purpose
+Measure:
+visitors 
+page views 
+routes 
+referrers 
+device information 
+custom museum actions where supported by your plan/configuration 
+Vercel describes Web Analytics as privacy-oriented and first-party, with automatic page-view tracking and support for custom events. 
+Package
+@vercel/analytics
+Integration
+Add the Analytics component to the application layout.
+Events to track
+museum_entered
+project_viewed
+project_demo_clicked
+project_source_clicked
+experiment_opened
+contact_clicked
+museum_map_opened
+Event data
+Keep it small:
+{
+  "project": "quest-arena"
+}
+Do not send:
+email
+password
+message text
+auth token
+private database data
+
+62. Vercel Analytics API
+For a future private analytics dashboard, Vercel now provides a Web Analytics API with aggregated visits and events. 
+Example server-side query pattern:
+GET
+https://api.vercel.com/v1/query/web-analytics/...
+with authenticated server-side access.
+Do not call Vercel's management/analytics API directly from the browser.
+Store the Vercel token server-side.
+For V1, you can simply use the Vercel dashboard and avoid building an internal analytics dashboard.
+
+63. Vercel Speed Insights
+Purpose
+Measure real-world:
+LCP 
+INP 
+CLS 
+TTFB 
+regional/device performance 
+Vercel's Speed Insights is designed for real-user performance data, including Core Web Vitals. 
+Package
+@vercel/speed-insights
+The current Vercel guidance recommends keeping these integrations updated; Vercel's 2026 resilient-intake update applies to the current Analytics and Speed Insights packages. 
+Frontend
+Add:
+<SpeedInsights />
+No business data should be sent.
+
+64. Resend â€” Contact Email
+Status
+Recommended, but not mandatory.
+Use Resend if you want the contact form to deliver directly to your inbox.
+Resend provides an email API with sending endpoints and supports email metadata/attachments and other delivery features. 
+Frontend
+The browser should not call Resend directly.
+Instead:
+Contact Form
+   â†“
+Next.js /api/contact
+   â†“
+Validate
+   â†“
+Resend
+   â†“
+Your inbox
+
+65. Resend Request
+Conceptually the server performs:
+POST /emails
+with:
+{
+  "from": "Museum <hello@yourdomain.com>",
+  "to": ["you@example.com"],
+  "subject": "New museum transmission",
+  "html": "<safe generated HTML>"
+}
+Response
+Success:
+email id
+Failure:
+error
+Never expose the Resend API key to the frontend.
+
+66. Contact Form Payload
+Frontend sends only:
+{
+  "name": "Visitor",
+  "email": "visitor@example.com",
+  "message": "I'd like to discuss..."
+}
+Optional:
+{
+  "honeypot": ""
+}
+The API should:
+validate input, 
+rate-limit, 
+sanitize, 
+send email, 
+return a generic success/error result. 
+
+67. Sentry â€” Error Monitoring
+Status
+Recommended for production, optional during early local development.
+Use Sentry to capture unexpected:
+server exceptions 
+client exceptions 
+route failures 
+integration failures 
+3D errors where useful 
+I would keep Sentry behind the application's error boundary and never expose raw error details to users.
+The frontend sees:
+Something went wrong.
+Sentry receives:
+error
+stack
+route
+release
+environment
+request ID
+Do not send:
+passwords 
+auth tokens 
+contact messages unless deliberately scrubbed 
+secret environment variables 
+
+68. No Direct Third-Party Calls from 3D
+Three.js should not have any business API responsibilities.
+Bad:
+Three.js scene
+   â†“
+database
+Good:
+Next.js content
+   â†“
+React state
+   â†“
+Three.js presentation
+The 3D scene should receive already-prepared data.
+Example:
+<MuseumArtifact
+  title="Quest Arena"
+  imageUrl="..."
+  projectSlug="quest-arena"
+/>
+It shouldn't query Supabase itself.
+
+69. Integration Failure Policy
+Every third-party service must be classified:
+Service
+Can failure break museum?
+Supabase content
+Potentially, but cache/fallback
+Supabase Auth
+Only admin
+Supabase Storage
+Affected media only
+Vercel Analytics
+No
+Vercel Speed Insights
+No
+Resend
+Contact only
+Sentry
+No
+Three.js/WebGL
+No
+This is a very important architecture rule.
+Analytics fails?
+Museum works.
+Sentry fails?
+Museum works.
+Resend fails?
+Portfolio works; contact gives alternate email option.
+WebGL fails?
+2D museum works.
+One project image fails?
+Project page still works.
+
+70. Frontend Folder Design
+The UI architecture from the technical document should be reflected directly in the component system:
+src/components/
+â”‚
+â”œâ”€â”€ museum/
+â”œâ”€â”€ gallery/
+â”œâ”€â”€ projects/
+â”œâ”€â”€ laboratory/
+â”œâ”€â”€ archivist/
+â”œâ”€â”€ archive/
+â”œâ”€â”€ contact/
+â”œâ”€â”€ three/
+â””â”€â”€ ui/
+The rule:
+Domain components know the product. UI components know the interface.
+For example:
+ProjectCard.tsx knows what a project is.
+Button.tsx doesn't know what a project is.
+That's how the design system stays reusable.
+
+71. Component API Rules
+Components should prefer explicit props.
+Example:
+<ProjectCard
+  project={project}
+  variant="featured"
+/>
+rather than:
+<ProjectCard data={everything}
+/>
+Keep data contracts clear.
+
+72. Component Variants
+Button
+primary
+secondary
+ghost
+danger
+Card
+default
+featured
+compact
+archive
+Exhibit
+wall
+floating
+featured
+archive
+Modal
+default
+image
+map
+confirmation
+
+73. Design Tokens in Code
+The token layer should conceptually look like:
+design-tokens
+â”‚
+â”œâ”€â”€ colors
+â”œâ”€â”€ typography
+â”œâ”€â”€ spacing
+â”œâ”€â”€ radii
+â”œâ”€â”€ shadows
+â”œâ”€â”€ motion
+â””â”€â”€ breakpoints
+Do not bury visual constants in individual components.
+
+74. Responsive Rules
+Desktop
+Prioritize:
+museum atmosphere 
+large images 
+3D 
+spatial layout 
+Tablet
+Prioritize:
+readable galleries 
+reduced 3D 
+touch-safe controls 
+Mobile
+Prioritize:
+content 
+project discovery 
+speed 
+simple navigation 
+The mobile design should feel like a beautiful museum catalogue, not a failed desktop museum.
+
+75. Performance Budget
+I would establish a formal frontend budget.
+Initial page
+Aim for:
+JavaScript: keep lean
+Images: optimized
+3D assets: lazy-loaded
+Fonts: limited to two families
+Core Web Vitals targets
+Aim for approximately:
+LCP < 2.5s
+INP < 200ms
+CLS < 0.1
+These are common â€œgoodâ€ Core Web Vital thresholds and are also used in current Vercel educational guidance. 
+For this product, I'd be particularly strict about INP and LCP, because a heavy museum experience can easily make interaction feel sluggish.
+
+76. Image Loading Strategy
+Use:
+thumbnail â†’ collection cards
+medium â†’ standard project content
+large â†’ project hero
+original â†’ only when explicitly requested
+Lazy-load:
+below-the-fold images 
+gallery images 
+3D models 
+videos 
+
+77. Font Strategy
+Load only the required weights.
+For example:
+DM Serif Display
+400
+Inter
+400
+500
+600
+700
+Do not load every available weight.
+
+78. Accessibility + 3D
+For every 3D exhibit:
+3D object
++
+visible title
++
+accessible button
++
+keyboard-accessible route
+The user should never have to:
+rotate the camera until they accidentally click the right object.
+That would be fun for a game.
+Not great for a portfolio.
+
+79. SEO Frontend Rules
+Every project page gets:
+<title>
+description
+canonical URL
+Open Graph image
+social metadata
+Example:
+Quest Arena â€” Interactive Web Experience | Bunny
+The 3D presentation should not be the only place where important project text exists.
+
+80. Final Frontend Stack
+Required
+Next.js
+React
+TypeScript
+Tailwind CSS
+Motion
+Three.js
+React Three Fiber
+@react-three/drei
+Lucide React
+Zod
+Zustand
+Supabase
+Recommended
+@vercel/analytics
+@vercel/speed-insights
+Production recommended
+Resend
+Sentry
+
+81. Final UI Architecture
+The complete experience can be summarized as:
+                         THE DIGITAL MUSEUM
+                                  â”‚
+                  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                  â”‚                              â”‚
+              INFORMATION                    ATMOSPHERE
+                  â”‚                              â”‚
+                  â–¼                              â–¼
+           React / Next.js                Three.js / R3F
+                  â”‚                              â”‚
+                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                 â”‚
+                                 â–¼
+                         DESIGN SYSTEM
+                                 â”‚
+             â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+             â”‚                   â”‚                   â”‚
+          Typography           Color              Motion
+             â”‚                   â”‚                   â”‚
+             â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                 â”‚
+                                 â–¼
+                         CONTENT PLATFORM
+                                 â”‚
+                                 â–¼
+                              Supabase
+
+82. The Most Important Frontend Rule
+I would put this at the top of the frontend repository:
+A visitor should never need to understand the technology behind the museum to use the museum.
+They shouldn't need to understand:
+Three.js 
+WebGL 
+React 
+Supabase 
+server components 
+client components 
+API calls 
+They should simply feel:
+â€œThis is a beautiful place to explore.â€
+And then, five seconds later:
+â€œOh. This person actually builds really good stuff.â€
+That's the real frontend goal.
+The current integration details above intentionally use the providers' current SDK patterns rather than hard-coded low-level URLs wherever the SDK abstracts them. That's especially important for Vercel Analytics/Speed Insights: Vercel changed their intake architecture in 2026 so current packages dynamically discover ingestion endpoints, meaning the frontend should use the supported packages rather than manually depending on old endpoint paths. 
+

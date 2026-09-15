@@ -1,0 +1,947 @@
+﻿Feature Ticket List â€” The Digital Museum
+Product: The Digital MuseumPurpose: Build a memorable, futuristic digital portfolio presented as a virtual museum.Primary user: Recruiter / hiring managerSecondary users: Developers, designers, collaborators, casual visitorsNorth-star principle: â€œMake them curious enough to enter, impressed enough to explore, and informed enough to remember.â€
+The PRD defines the MVP around the Entrance, Main Gallery, Project Exhibits, Project Case Studies, Laboratory, Archivist, Timeline, Contact, responsive behavior, accessibility, and performance. Archive, Museum Map, advanced 3D, and sound are later priorities; search, CMS, user accounts, social features, VR, AR, multiplayer, e-commerce, massive 3D environments, complex physics, and an AI chatbot are deliberately out of V1.
+
+PHASE 0 â€” FOUNDATION
+TICKET DM-001 â€” Application Foundation
+Priority: Must-have for launch
+Description
+Set up the base frontend application for The Digital Museum using the existing project architecture.
+Create the application shell, routing foundation, TypeScript configuration, global styles, component structure, and development tooling needed for the rest of the product.
+Do not build museum-specific visual effects in this ticket.
+Acceptance Criteria
+The application starts successfully in development.
+Production build completes without errors.
+TypeScript is enabled in strict mode.
+Global CSS is loaded correctly.
+Main application routing is functional.
+The project has a clear separation between:
+pages/routes,
+reusable UI components,
+museum-specific components,
+project components,
+laboratory components.
+No placeholder architecture is introduced that will need to be rewritten for the MVP.
+There are no console errors on initial load.
+Dependencies
+None.
+
+TICKET DM-002 â€” Global Design System Foundation
+Priority: Must-have for launch
+Description
+Create the reusable visual foundation for the museum.
+Define reusable tokens/components for:
+colors,
+typography,
+spacing,
+borders,
+button primitives,
+labels,
+cards,
+focus states,
+loading states.
+Use the museum visual language rather than generic SaaS styling.
+Acceptance Criteria
+All global colors are represented through reusable tokens.
+Typography hierarchy is consistent.
+Spacing follows a coherent scale.
+Buttons share consistent behavior.
+Focus states are visible.
+Components do not contain arbitrary repeated styling values when a shared token is appropriate.
+The visual system supports both desktop and mobile.
+No museum-specific page duplicates the same base UI styles unnecessarily.
+Dependencies
+DM-001.
+
+TICKET DM-003 â€” Global Navigation
+Priority: Must-have for launch
+Description
+Build the persistent primary navigation for:
+Collection
+About
+Lab
+Contact
+Archive where implemented
+The navigation must feel like part of the museum rather than a standard website navbar.
+Acceptance Criteria
+Navigation is visible and understandable on desktop.
+Navigation is usable on mobile.
+Every available primary section can be reached from it.
+Current location/state is visually understandable.
+Keyboard users can navigate through the menu.
+Mobile navigation has a clear open/close interaction.
+Navigation does not depend on Three.js.
+Dependencies
+DM-001, DM-002.
+
+PHASE 1 â€” CORE MVP EXPERIENCE
+TICKET DM-004 â€” Museum Entrance
+Priority: Must-have for launch
+Description
+Build the landing/entrance experience for The Digital Museum.
+Display:
+museum name,
+creator name,
+short positioning statement,
+Enter Museum CTA.
+Clicking Enter Museum should move the visitor into the Main Gallery through a short cinematic transition.
+The entrance must immediately communicate whose portfolio this is, what the website represents, and what action the visitor should take.
+Acceptance Criteria
+Museum title is immediately visible.
+Creator name is immediately visible.
+Positioning statement is visible.
+Enter Museum CTA is prominent.
+CTA is keyboard accessible.
+Clicking CTA transitions to the Main Gallery.
+Transition is short and does not block usability unnecessarily.
+Reduced-motion users receive an appropriately simplified transition.
+The entrance works without WebGL.
+Dependencies
+DM-002, DM-003, DM-005.
+
+TICKET DM-005 â€” Main Gallery Structure
+Priority: Must-have for launch
+Description
+Build the central museum/gallery experience.
+The gallery must introduce:
+selected projects,
+laboratory,
+about/archivist,
+archive if available,
+contact.
+It can visually resemble a 3D museum, but navigation must remain fundamentally web-like and understandable.
+Desktop interaction may support:
+mouse,
+click,
+scroll,
+keyboard.
+Mobile must support:
+touch scrolling,
+cards/sections,
+simplified navigation.
+Acceptance Criteria
+Visitor can identify the main sections.
+Visitor can reach Projects in one or two interactions.
+Visitor can reach About, Lab, and Contact.
+Navigation does not require learning a complex 3D control scheme.
+A fully functional non-3D presentation exists.
+Mobile layout is intentionally designed rather than simply scaled down.
+Back navigation works.
+Dependencies
+DM-001, DM-002, DM-003.
+
+TICKET DM-006 â€” Project Content Model
+Priority: Must-have for launch
+Description
+Create the structured content model required for museum projects.
+Each project must support:
+id,
+title,
+artifact number,
+year,
+category,
+description,
+thumbnail,
+hero image,
+technologies,
+problem,
+approach,
+challenges,
+solutions,
+results,
+gallery,
+live URL,
+source URL.
+Use structured data so adding future projects does not require rewriting page components.
+Acceptance Criteria
+Project data has a clearly defined schema/type.
+At least three projects can be represented.
+Gallery media can contain multiple items.
+Technologies are represented as structured data.
+Live and source links are optional where appropriate.
+Components consume the schema instead of hardcoding project information.
+Adding a fourth project requires content addition rather than page duplication.
+Dependencies
+DM-001.
+
+TICKET DM-007 â€” Project Collection / Exhibit Grid
+Priority: Must-have for launch
+Description
+Build the collection of project exhibits in the Main Gallery.
+Each exhibit must display:
+project image/video,
+project name,
+category,
+year,
+short description,
+technologies,
+View Exhibit CTA.
+Acceptance Criteria
+At least three real projects render.
+Every project shows the required metadata.
+Exhibit cards have a clear visual hierarchy.
+Clicking an exhibit opens its case study.
+Hover/focus states are implemented.
+Keyboard users can activate exhibits.
+Cards work responsively.
+Missing optional media does not break the card.
+Dependencies
+DM-002, DM-005, DM-006.
+
+TICKET DM-008 â€” Project Case Study Page
+Priority: Must-have for launch
+Description
+Build the individual project exhibit/case study page.
+Each case study must contain:
+Overview
+Problem
+Approach
+Technology
+Challenges
+Solution
+Gallery
+Result
+Live Project link
+View Source link.
+Acceptance Criteria
+Every project has a unique route.
+Project title and high-level information appear immediately.
+All required case-study sections can be rendered from project data.
+Gallery media displays correctly.
+Live Project link works when provided.
+Source link works when provided.
+Missing optional links do not produce broken buttons.
+Visitor can return to the collection.
+The page is readable without the museum's 3D environment.
+Dependencies
+DM-006, DM-007.
+
+TICKET DM-009 â€” Project Media Gallery
+Priority: Must-have for launch
+Description
+Build reusable media presentation for project screenshots, videos, and interactive demonstrations.
+The gallery should support multiple media items and provide a clear visual narrative.
+Acceptance Criteria
+Multiple images can be displayed.
+Images have meaningful alt text.
+Media can be viewed on mobile.
+Media does not cause layout jumps.
+Large media is lazy-loaded where appropriate.
+A missing media item does not crash the project page.
+Video does not autoplay unexpectedly.
+Dependencies
+DM-006, DM-008.
+
+TICKET DM-010 â€” Project Links and Verification Actions
+Priority: Must-have for launch
+Description
+Build clear actions for:
+Live Project
+View Source
+These actions are part of the primary recruiter journey because the PRD identifies Live Demo and Source verification as key stages of the funnel.
+Acceptance Criteria
+Live Project opens the correct URL.
+Source opens the correct repository URL.
+External links are visually identifiable.
+Missing links are omitted rather than broken.
+External links use safe target/rel behavior where appropriate.
+Actions are keyboard accessible.
+Dependencies
+DM-008.
+
+PHASE 2 â€” LABORATORY
+TICKET DM-011 â€” Laboratory Section
+Priority: Must-have for launch
+Description
+Create the Laboratory section for experiments that don't belong in the primary project collection.
+It should support experiments such as:
+Three.js experiments,
+particle systems,
+UI experiments,
+animation experiments,
+AI experiments,
+prototypes,
+unfinished concepts.
+Each experiment must expose:
+experiment number,
+title,
+status,
+technology,
+Run Experiment action.
+Acceptance Criteria
+Laboratory is accessible from primary navigation.
+At least two experiments can be displayed for MVP.
+Each experiment exposes its status.
+Technology is clearly identified.
+User can open/run an experiment.
+Experiments do not need to be complete production applications.
+Broken/experimental content does not break the rest of the museum.
+Dependencies
+DM-002, DM-003, DM-005.
+
+TICKET DM-012 â€” Experiment Detail / Runner
+Priority: Must-have for launch
+Description
+Build the reusable presentation for an individual laboratory experiment.
+Support:
+experiment title,
+status,
+technology,
+description,
+interactive/demo area,
+source link where available.
+Acceptance Criteria
+Every experiment has a unique route or dedicated view.
+Interactive experiment can be launched.
+A broken experiment has a graceful fallback.
+Visitor can return to Laboratory.
+Experiment content is responsive.
+Reduced-motion behavior is respected.
+Dependencies
+DM-011.
+
+PHASE 3 â€” ARCHIVIST & STORY
+TICKET DM-013 â€” Archivist / About Section
+Priority: Must-have for launch
+Description
+Build the Archivist section as the personal/about area of the museum.
+Display:
+name,
+role,
+short biography,
+interests,
+current focus,
+education where relevant,
+technologies,
+personal philosophy.
+Acceptance Criteria
+The page clearly identifies Bunny.
+Role is visible.
+Biography is readable.
+Current focus can be communicated.
+Skills/technologies are represented without overwhelming the biography.
+Page works without 3D.
+Mobile layout remains readable.
+Dependencies
+DM-002, DM-003.
+
+TICKET DM-014 â€” Journey Timeline
+Priority: Must-have for launch
+Description
+Create a visual journey timeline communicating meaningful development milestones over time.
+The PRD gives examples for 2023â€“2026 but explicitly requires meaningful milestones rather than invented achievements.
+Acceptance Criteria
+Timeline supports multiple years.
+Each entry contains year, title, and description.
+Timeline is visually connected.
+Timeline remains readable on mobile.
+Timeline animations do not prevent reading.
+No milestone is fabricated by the implementation.
+Dependencies
+DM-013.
+
+PHASE 4 â€” CONTACT
+TICKET DM-015 â€” Contact Section
+Priority: Must-have for launch
+Description
+Build the simple contact area.
+The PRD requires:
+email,
+GitHub,
+LinkedIn.
+Do not create an unnecessarily complex contact workflow for V1.
+Acceptance Criteria
+Contact section is reachable from navigation.
+Email action works.
+GitHub link works.
+LinkedIn link works.
+All links are keyboard accessible.
+Contact section has a clear CTA for collaboration.
+No account is required.
+Dependencies
+DM-003.
+
+PHASE 5 â€” RESPONSIVE EXPERIENCE
+TICKET DM-016 â€” Responsive Desktop Layout
+Priority: Must-have for launch
+Description
+Ensure the museum works correctly on desktop and laptop screen sizes.
+Prioritize:
+gallery composition,
+readable typography,
+project discovery,
+controlled visual effects,
+clear navigation.
+Acceptance Criteria
+Main pages work across common desktop widths.
+No horizontal overflow.
+No text is clipped.
+Navigation remains usable.
+Project cards remain visually balanced.
+3D/visual effects do not obscure content.
+Dependencies
+DM-005, DM-007, DM-008.
+
+TICKET DM-017 â€” Responsive Mobile Experience
+Priority: Must-have for launch
+Description
+Create an intentionally designed mobile version rather than shrinking the desktop museum.
+Use:
+normal touch scrolling,
+simplified navigation,
+project cards/sections,
+readable content,
+reduced visual complexity.
+The PRD explicitly calls for desktop, tablet, and mobile support.
+Acceptance Criteria
+Works on mobile widths.
+No horizontal scrolling except intentionally interactive content.
+Touch targets are usable.
+Mobile navigation is clear.
+Project case studies remain readable.
+Laboratory experiments have mobile-safe fallbacks.
+No required workflow depends on hover.
+Dependencies
+DM-005, DM-007, DM-008, DM-011, DM-013, DM-015.
+
+TICKET DM-018 â€” Tablet Adaptation
+Priority: Must-have for launch
+Description
+Create an intermediate tablet experience between desktop and mobile.
+Acceptance Criteria
+Layout does not simply inherit broken desktop behavior.
+Gallery remains navigable.
+Project cards maintain hierarchy.
+3D complexity can be reduced if necessary.
+Navigation remains accessible.
+Dependencies
+DM-016, DM-017.
+
+PHASE 6 â€” ACCESSIBILITY
+TICKET DM-019 â€” Keyboard Navigation
+Priority: Must-have for launch
+Description
+Make the entire MVP usable through keyboard navigation.
+Cover:
+global navigation,
+Enter Museum,
+project cards,
+case study links,
+Laboratory controls,
+contact links,
+modals if introduced.
+The PRD explicitly requires keyboard navigation and meaningful focus states.
+Acceptance Criteria
+All interactive controls can be reached by keyboard.
+Focus order follows the visual/logical order.
+Focus state is visually obvious.
+No keyboard trap exists.
+Escape works for dismissible overlays.
+Users can complete the primary journey without a mouse.
+Dependencies
+DM-003, DM-004, DM-007, DM-008, DM-011, DM-015.
+
+TICKET DM-020 â€” Semantic HTML and Screen-Reader Structure
+Priority: Must-have for launch
+Description
+Implement semantic HTML and accessible labeling across the museum.
+Acceptance Criteria
+Pages have logical heading hierarchy.
+Buttons are buttons.
+Links are links.
+Images have appropriate alt text.
+Decorative imagery is marked decorative.
+Interactive elements have accessible names.
+Project information can be understood without visual effects.
+Screen-reader users can reach all primary content.
+Dependencies
+DM-004 through DM-015.
+
+TICKET DM-021 â€” Reduced Motion Support
+Priority: Must-have for launch
+Description
+Respect the user's reduced-motion preference.
+Reduce or disable:
+cinematic camera movement,
+excessive page transitions,
+particle movement,
+parallax,
+unnecessary animation.
+The PRD explicitly requires reduced-motion support and states that users with reduced-motion enabled must still be able to browse the portfolio.
+Acceptance Criteria
+prefers-reduced-motion is detected.
+Cinematic transitions are replaced by minimal transitions.
+Continuous decorative animation is reduced/disabled.
+Core navigation remains functional.
+No important content is hidden because motion is disabled.
+Dependencies
+DM-004, DM-005, DM-016, DM-017.
+
+TICKET DM-022 â€” Contrast and Focus Audit
+Priority: Must-have for launch
+Description
+Audit color contrast, focus states, readable typography, and text hierarchy across all MVP screens.
+Acceptance Criteria
+Text remains readable against museum backgrounds.
+Interactive controls have visible focus.
+Important information does not rely only on color.
+Disabled/error/success states are distinguishable.
+Desktop and mobile are audited.
+Dependencies
+DM-002, DM-019, DM-020.
+
+PHASE 7 â€” PERFORMANCE & RESILIENCE
+TICKET DM-023 â€” Image Optimization and Lazy Loading
+Priority: Must-have for launch
+Description
+Optimize project and museum imagery.
+Implement:
+appropriately sized images,
+lazy loading for below-the-fold content,
+optimized formats where supported,
+explicit dimensions to prevent layout shifts.
+The PRD explicitly requires optimized assets and lazy-loaded imagery.
+Acceptance Criteria
+Above-the-fold imagery loads with appropriate priority.
+Below-the-fold images are lazy-loaded.
+No unnecessary original-resolution images are loaded.
+Images do not cause visible layout jumps.
+Missing images have a fallback.
+Mobile receives appropriate image sizes.
+Dependencies
+DM-007, DM-008, DM-009.
+
+TICKET DM-024 â€” Controlled Animation System
+Priority: Must-have for launch
+Description
+Audit and control all animation.
+Use animation only for:
+orientation,
+navigation,
+exhibit emphasis,
+continuity,
+state changes.
+Avoid unnecessary animation loops.
+The PRD explicitly calls for controlled animation and no unnecessary animation loops.
+Acceptance Criteria
+No unnecessary infinite animation loops.
+Animation durations are consistent.
+Reduced-motion behavior is integrated.
+Animations do not block user actions.
+Animation does not cause layout shift.
+Dependencies
+DM-002, DM-004, DM-005, DM-007.
+
+TICKET DM-025 â€” WebGL Fallback
+Priority: Must-have for launch
+Description
+Build a complete non-WebGL fallback.
+If WebGL:
+is unavailable,
+fails,
+is too expensive for the device,
+the portfolio must still be completely usable.
+This is a hard requirement from the PRD.
+Acceptance Criteria
+WebGL failure does not crash the application.
+Visitor can browse projects.
+Visitor can read case studies.
+Visitor can access About, Lab, and Contact.
+Fallback visually belongs to the same museum design system.
+No raw WebGL errors are shown to users.
+Dependencies
+DM-005, DM-007, DM-008, DM-011.
+
+TICKET DM-026 â€” Performance Audit
+Priority: Must-have for launch
+Description
+Run a performance pass across the complete MVP.
+Focus on:
+initial load,
+image size,
+JavaScript weight,
+animation workload,
+3D workload,
+mobile performance.
+The PRD states that performance should not be sacrificed for visual spectacle.
+Acceptance Criteria
+No obviously oversized assets remain.
+No unnecessary animation loops remain.
+No unnecessary client-side JavaScript is introduced.
+3D is controlled and does not prevent ordinary portfolio browsing.
+Mobile performance is acceptable.
+No major performance regression introduced by visual effects.
+Dependencies
+DM-023, DM-024, DM-025.
+
+TICKET DM-027 â€” Error and Empty States
+Priority: Must-have for launch
+Description
+Add graceful handling for:
+missing project,
+missing experiment,
+missing media,
+empty collection,
+failed experiment,
+failed 3D initialization,
+broken optional project link.
+Acceptance Criteria
+Broken content does not crash the whole application.
+Missing project returns a user-friendly not-found state.
+Missing image uses a fallback.
+Missing optional links are hidden.
+Empty collections have useful empty-state copy.
+Technical errors are not displayed raw to the visitor.
+Dependencies
+DM-007, DM-008, DM-011, DM-025.
+
+PHASE 8 â€” ANALYTICS
+TICKET DM-028 â€” Product Analytics Events
+Priority: Must-have for launch
+Description
+Implement analytics for the primary portfolio funnel defined in the PRD.
+Track at minimum:
+museum entered,
+project viewed,
+live project clicked,
+source clicked,
+laboratory experiment opened,
+contact clicked.
+The PRD identifies project engagement, case-study completion, live-project click-through, contact conversion, and secondary engagement metrics as success measures.
+Acceptance Criteria
+Each required event fires once per intentional user action.
+Events include only useful non-sensitive metadata.
+Analytics failure never breaks the UI.
+Project identifiers can distinguish which project was viewed.
+Contact clicks can be measured.
+Project demo/source actions can be measured.
+Dependencies
+DM-004, DM-008, DM-011, DM-015.
+
+PHASE 9 â€” QUALITY ASSURANCE
+TICKET DM-029 â€” Primary Visitor Journey E2E Test
+Priority: Must-have for launch
+Description
+Create an automated browser test for:
+Landing â†’ Enter Museum â†’ Main Gallery â†’ Project â†’ Case Study â†’ Live Demo/Source â†’ Contact.
+The PRD explicitly identifies this as the critical funnel.
+Acceptance Criteria
+Test begins at the public homepage.
+User enters the museum.
+User reaches selected projects.
+User opens a project exhibit.
+User can read the case study.
+Live/source actions are present when configured.
+User can reach Contact.
+Test passes on desktop viewport.
+Dependencies
+DM-004 through DM-015.
+
+TICKET DM-030 â€” Mobile E2E Test
+Priority: Must-have for launch
+Description
+Create an automated mobile browser test covering the essential visitor journey.
+Acceptance Criteria
+Mobile navigation opens.
+User can enter the museum.
+User can browse projects.
+User can open a case study.
+User can navigate to contact.
+No horizontal overflow blocks the journey.
+Test passes at a representative mobile viewport.
+Dependencies
+DM-017, DM-019, DM-020, DM-029.
+
+TICKET DM-031 â€” Final Launch Quality Audit
+Priority: Must-have for launch
+Description
+Perform a final audit against the PRD launch checklist.
+Check:
+no placeholders,
+no broken links,
+no console errors,
+no unnecessary animations,
+no layout jumps,
+no giant unoptimized assets,
+optimized images,
+lazy loading,
+WebGL fallback,
+reduced-motion mode,
+keyboard navigation,
+responsive layout,
+error handling,
+analytics.
+Acceptance Criteria
+All checklist items are verified.
+No known critical bugs remain.
+No required MVP feature is still a placeholder.
+Production build succeeds.
+Primary E2E tests pass.
+Desktop, tablet, and mobile have been manually checked.
+Dependencies
+All Must-have launch tickets.
+
+PHASE 10 â€” SHOULD-HAVE FEATURES
+TICKET DM-032 â€” Archive
+Priority: Should-have
+Description
+Create the museum Archive for older projects and experiments.
+Organize items by year and present them as a historical collection.
+The PRD defines Archive as a later-priority feature for older work.
+Acceptance Criteria
+Archive is reachable from navigation.
+Content can be grouped by year.
+Older projects can be opened.
+Archive styling remains consistent with the museum.
+Archive does not compete visually with the primary collection.
+Dependencies
+DM-006, DM-007, DM-003.
+
+TICKET DM-033 â€” Museum Map
+Priority: Should-have
+Description
+Build an interactive map/floor plan of the museum.
+The map should show conceptual areas such as:
+About,
+Lab,
+Main Gallery,
+Archive.
+The PRD classifies this as useful but not essential to proving the MVP.
+Acceptance Criteria
+Map is clearly understandable.
+Each room has an accessible equivalent.
+Clicking a room navigates to its corresponding section.
+Map does not become the only navigation mechanism.
+Map works without WebGL.
+Dependencies
+DM-005, DM-032.
+
+TICKET DM-034 â€” Advanced 3D Museum Layer
+Priority: Should-have
+Description
+Add richer 3D presentation to the already-functional museum.
+Possible areas:
+entrance,
+central gallery,
+floating artifacts,
+museum map,
+exhibit transitions.
+Do not make core portfolio content dependent on Three.js. The PRD explicitly limits the 3D scope and requires the portfolio to remain usable without WebGL, on weak devices, with reduced motion, and on slow networks.
+Acceptance Criteria
+3D enhances rather than replaces core navigation.
+Performance is monitored.
+WebGL fallback remains fully functional.
+Reduced-motion mode disables/reduces major effects.
+Mobile gets a reduced experience rather than full desktop 3D.
+No large unnecessary 3D environment is introduced.
+Dependencies
+DM-025, DM-026, DM-033.
+
+PHASE 11 â€” NICE-TO-HAVE FEATURES
+TICKET DM-035 â€” Optional Museum Sound
+Priority: Nice-to-have
+Description
+Add subtle ambient museum audio.
+The PRD specifies:
+sound OFF by default,
+obvious toggle,
+remembered preference,
+no autoplay audio.
+Acceptance Criteria
+Sound is off by default.
+User explicitly enables it.
+Sound can be disabled immediately.
+Preference can be remembered locally.
+No unexpected audio starts.
+Reduced-motion/accessibility behavior remains unaffected.
+Dependencies
+DM-005, DM-017.
+
+PHASE 12 â€” EXPLICITLY OUT OF SCOPE
+Do NOT create implementation tickets for these in V1.
+DM-OUT-001 â€” Search
+Priority: Out of scope
+The PRD explicitly marks search as future functionality. It may later search terms such as React, Three.js, year, or Web.
+
+DM-OUT-002 â€” CMS
+Priority: Out of scope
+Do not build an admin CMS in V1. The PRD deliberately keeps project content structured locally/through simple data rather than building a CMS product.
+
+DM-OUT-003 â€” Visitor Accounts
+Priority: Out of scope
+Visitors do not need accounts.
+
+DM-OUT-004 â€” Social Features
+Priority: Out of scope
+Do not build:
+comments,
+likes,
+follows,
+social profiles.
+
+DM-OUT-005 â€” Multiplayer
+Priority: Out of scope
+Do not create visitor avatars, shared rooms, multiplayer navigation, or collaborative museum interactions.
+
+DM-OUT-006 â€” VR / AR
+Priority: Out of scope
+Do not add headset-based VR or camera-based AR in V1. The museum must work in an ordinary web browser.
+
+DM-OUT-007 â€” E-commerce
+Priority: Out of scope
+Do not build:
+tickets,
+memberships,
+merchandise,
+donations,
+checkout.
+
+DM-OUT-008 â€” Massive 3D Environment
+Priority: Out of scope
+Do not build a giant explorable game-like museum. 3D exists to support navigation and storytelling.
+
+DM-OUT-009 â€” Complex Physics / Procedural World
+Priority: Out of scope
+Do not add:
+physics simulations,
+destructible environments,
+procedural worlds,
+complicated particle ecosystems.
+Every visual effect needs a product reason.
+
+DM-OUT-010 â€” AI Portfolio Chatbot
+Priority: Out of scope
+Do not build a chatbot for asking questions about Bunny in V1. The PRD explicitly identifies this as unnecessary to the primary portfolio journey.
+
+RECOMMENDED BUILD ORDER
+Use this dependency order when feeding tickets to an AI coding tool:
+DM-001 Foundation
+    â†“
+DM-002 Design System
+    â†“
+DM-003 Navigation
+    â†“
+DM-006 Content Model
+    â†“
+DM-004 Entrance
+    â†“
+DM-005 Main Gallery
+    â†“
+DM-007 Project Exhibits
+    â†“
+DM-008 Case Studies
+    â†“
+DM-009 Project Gallery
+    â†“
+DM-010 Project Links
+    â†“
+DM-011 Laboratory
+    â†“
+DM-012 Experiment Runner
+    â†“
+DM-013 Archivist
+    â†“
+DM-014 Timeline
+    â†“
+DM-015 Contact
+    â†“
+DM-016 Desktop
+DM-017 Mobile
+DM-018 Tablet
+    â†“
+DM-019 Keyboard
+DM-020 Semantic Accessibility
+DM-021 Reduced Motion
+DM-022 Contrast
+    â†“
+DM-023 Image Optimization
+DM-024 Animation Audit
+DM-025 WebGL Fallback
+DM-026 Performance Audit
+DM-027 Error States
+    â†“
+DM-028 Analytics
+    â†“
+DM-029 Desktop E2E
+DM-030 Mobile E2E
+DM-031 Launch Audit
+Then:
+SHOULD-HAVE
+DM-032 Archive
+DM-033 Museum Map
+DM-034 Advanced 3D
+
+NICE-TO-HAVE
+DM-035 Sound
+
+AI CODING AGENT RULES
+Every coding agent working on these tickets should follow these product rules from the PRD:
+Do not rewrite unrelated code.
+Do not add features that are not part of the current ticket.
+Do not make Three.js a dependency for basic portfolio functionality.
+Do not sacrifice accessibility for visual effects.
+Do not sacrifice performance for visual effects.
+Do not invent portfolio achievements, project results, or timeline milestones.
+Use real project content where available and clearly identify placeholders during development.
+Every interactive feature must have a usable keyboard/mobile equivalent.
+Every animation must have a product reason.
+Every ticket must be verified before being marked complete.
+These rules directly preserve the PRD's central principle: the museum is the presentation layer, while the underlying product remains a high-quality, highly usable portfolio.
+
+DEFINITION OF DONE â€” GLOBAL
+A ticket is not complete merely because the code compiles.
+A ticket is complete when:
+The requested functionality exists.
+Acceptance criteria pass.
+Existing functionality still works.
+No unrelated behavior was changed.
+Desktop behavior is checked.
+Mobile behavior is checked when relevant.
+Keyboard behavior is checked when relevant.
+Reduced-motion behavior is checked when relevant.
+No new console errors are introduced.
+No obvious performance regression is introduced.
+The implementation matches the museum design language.
+The AI coding agent explains what files were changed and how the result was verified.
+
+MVP EXIT CRITERIA
+The MVP is ready for launch when the visitor can complete this path reliably:
+LANDING
+   â†“
+UNDERSTAND BUNNY
+   â†“
+ENTER MUSEUM
+   â†“
+SEE SELECTED WORK
+   â†“
+OPEN PROJECT
+   â†“
+READ CASE STUDY
+   â†“
+VIEW LIVE PROJECT / SOURCE
+   â†“
+EXPLORE MORE
+   â†“
+CONTACT
+The MVP must contain:
+Entrance
+Main Gallery
+at least 3 strong projects
+full project case studies
+at least 2 laboratory experiments
+Archivist/about
+skills
+timeline
+contact
+desktop/tablet/mobile support
+keyboard navigation
+semantic HTML
+sufficient contrast
+reduced-motion support
+optimized/lazy-loaded assets
+controlled 3D
+WebGL fallback
+analytics
+no placeholder content at launch
+These requirements come directly from the PRD's MVP definition and launch checklist.
+
