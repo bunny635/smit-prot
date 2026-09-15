@@ -1,5 +1,6 @@
-﻿import React from "react";
+import React from "react";
 import { cn } from "@/utils/cn";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -33,11 +34,12 @@ export const ExhibitCard = React.forwardRef<HTMLAnchorElement, ExhibitCardProps>
             {/* Archival Media Bay */}
             <div className="lg:col-span-8 relative aspect-[16/10] lg:aspect-auto min-h-[420px] lg:min-h-[580px] bg-museum-charcoal overflow-hidden flex items-center justify-center border-b lg:border-b-0 lg:border-r border-museum-border">
               {imageUrl ? (
-                <img 
+                <Image 
                   src={imageUrl} 
                   alt={title} 
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]" 
-                  loading="lazy"
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                  sizes="(max-width: 1024px) 100vw, 66vw"
                 />
               ) : (
                 <div className="absolute inset-0 bg-museum-charcoal opacity-50" />
@@ -121,11 +123,12 @@ export const ExhibitCard = React.forwardRef<HTMLAnchorElement, ExhibitCardProps>
           {/* Media Container */}
           <div className="relative aspect-[4/3] bg-museum-charcoal overflow-hidden border-b border-museum-border shrink-0">
             {imageUrl ? (
-              <img 
+              <Image 
                 src={imageUrl} 
                 alt={title} 
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" 
-                loading="lazy"
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             ) : (
               <div className="absolute inset-0 bg-museum-charcoal opacity-50" />

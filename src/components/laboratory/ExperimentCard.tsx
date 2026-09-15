@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/Button";
 
@@ -25,11 +26,12 @@ export const ExperimentCard = React.forwardRef<HTMLDivElement, ExperimentCardPro
       >
         <div className="relative aspect-video overflow-hidden bg-museum-charcoal">
           {imageUrl ? (
-            <img 
+            <Image 
               src={imageUrl} 
               alt={title} 
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" 
-              loading="lazy"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div className="absolute inset-0 bg-museum-charcoal opacity-50" />

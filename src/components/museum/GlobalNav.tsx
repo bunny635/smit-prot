@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -13,6 +14,11 @@ export const GlobalNav = () => {
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+
+  const closeMenu = () => {
+    setIsMobileMenuOpen(false);
+    setTimeout(() => menuTriggerRef.current?.focus(), 10);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -57,14 +63,17 @@ export const GlobalNav = () => {
     };
   }, [isMobileMenuOpen]);
 
-  const closeMenu = () => {
-    setIsMobileMenuOpen(false);
-    setTimeout(() => menuTriggerRef.current?.focus(), 10);
-  };
-
   const renderNavLinks = (mobile: boolean) => {
+    // Prevent hydration mismatch by using a consistent pathname logic or waiting for mount
+    // Next.js static generation can sometimes mismatch with client pathname formatting (e.g., trailing slashes)
+    const normalizedPathname = pathname === "/" ? "/" : pathname?.replace(/\/$/, "") || "/";
+
     return navigationItems.map((item) => {
-      const isActive = pathname === item.href;
+      const itemHrefNormalized = item.href === "/" ? "/" : item.href.replace(/\/$/, "");
+      const isActive = item.href === "/" 
+        ? normalizedPathname === "/" 
+        : normalizedPathname === itemHrefNormalized || normalizedPathname.startsWith(`${itemHrefNormalized}/`);
+
       return (
         <Link
           key={item.href}
@@ -141,3 +150,4 @@ export const GlobalNav = () => {
     </header>
   );
 };
+

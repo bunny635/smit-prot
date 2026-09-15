@@ -8,7 +8,7 @@ export class WebGLErrorBoundary extends React.Component<{children: React.ReactNo
     this.state = { hasError: false };
   }
   static getDerivedStateFromError() { return { hasError: true }; }
-  componentDidCatch(error: any) { 
+  componentDidCatch(error: Error) { 
     console.warn("WebGL initialization failed, falling back to DOM only:", error); 
   }
   render() {
