@@ -20,6 +20,13 @@ export const ExperimentSchema = z.object({
   previewMedia: MediaSchema.optional(),
   featured: z.boolean().default(false),
   sortOrder: z.number().default(0),
+  
+  // Narrative fields (DM-012)
+  question: z.string().optional(),
+  approach: z.string().optional(),
+  result: z.string().optional(),
+  observations: z.string().optional(),
+  sourceUrl: z.string().url().optional(),
 });
 
 export type Experiment = z.infer<typeof ExperimentSchema>;
