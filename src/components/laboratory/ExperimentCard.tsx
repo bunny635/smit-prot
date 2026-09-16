@@ -1,36 +1,53 @@
-import React from "react";
+﻿import React from "react";
 import Image from "next/image";
 import { cn } from "@/utils/cn";
-import { Button } from "@/components/ui/Button";
+import { ArrowRight } from "lucide-react";
 
-interface ExperimentCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  experimentNumber: string;
+interface ExperimentCardProps extends React.HTMLAttributes<HTMLElement> {
+  experimentNumber: string | number;
   title: string;
-  status: "EXPERIMENTAL" | "IN PROGRESS" | "COMPLETED" | "ARCHIVED";
+  status: string;
   technology: string[];
   description: string;
   imageUrl?: string;
   onRun?: () => void;
+  runHref?: string;
 }
 
-export const ExperimentCard = React.forwardRef<HTMLDivElement, ExperimentCardProps>(
-  ({ className, experimentNumber, title, status, technology, description, imageUrl, onRun, ...props }, ref) => {
+export const ExperimentCard = React.forwardRef<HTMLElement, ExperimentCardProps>(
+  ({ className, experimentNumber, title, status, technology, description, imageUrl, onRun, runHref, ...props }, ref) => {
+    
+    const Component = runHref ? "a" : "article";
+    
     return (
-      <div
-        ref={ref}
+      <Component
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={ref as any}
+        href={runHref}
+        onClick={!runHref ? onRun : undefined}
         className={cn(
-          "group flex flex-col overflow-hidden rounded-[6px] border border-museum-border bg-museum-surface transition-all duration-200 hover:border-museum-gold-dim",
+          "group flex flex-col h-full bg-museum-surface p-6 border border-museum-border/60 rounded-[6px] hover:border-museum-gold/80 hover:bg-museum-surface-elevated transition-colors duration-300 block focus-ring",
           className
         )}
-        {...props}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        {...props as any}
       >
-        <div className="relative aspect-video overflow-hidden bg-museum-charcoal">
+        <div className="flex items-center justify-between pb-3 mb-4 border-b border-museum-border/60">
+          <span className="label-caps tracking-widest uppercase text-museum-gold">
+            EXPERIMENT {String(experimentNumber).padStart(3, '0')}
+          </span>
+          <span className="px-2 py-0.5 border border-museum-gold/60 rounded-[4px] label-caps text-[9px] tracking-widest uppercase text-museum-gold bg-museum-charcoal/40">
+            {status}
+          </span>
+        </div>
+        
+        <div className="relative w-full aspect-video rounded-[4px] overflow-hidden border border-museum-border bg-museum-black mb-6 flex items-center justify-center">
           {imageUrl ? (
             <Image 
               src={imageUrl} 
               alt={title} 
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
@@ -38,34 +55,33 @@ export const ExperimentCard = React.forwardRef<HTMLDivElement, ExperimentCardPro
           )}
         </div>
         
-        <div className="flex flex-col gap-6 p-6 md:p-8 flex-1">
-          <div className="flex items-center justify-between">
-            <span className="label-caps text-museum-muted">{experimentNumber}</span>
-            <span className="label-caps text-museum-dim">{status}</span>
+        <h2 className="heading-sm text-museum-white mb-2 group-hover:text-museum-gold transition-colors duration-200">
+          {title}
+        </h2>
+        
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {technology.map((tech) => (
+            <span key={tech} className="px-2 py-0.5 rounded-[4px] bg-museum-charcoal border border-museum-border label-metadata text-[11px] text-museum-muted">
+              {tech}
+            </span>
+          ))}
+        </div>
+        
+        <p className="body-sm text-museum-muted/90 leading-relaxed font-light mb-6 flex-grow">
+          {description}
+        </p>
+        
+        <div className="pt-3 border-t border-museum-border/60 flex items-center justify-between mt-auto">
+          <div className="label-metadata text-museum-dim font-mono">
+            EXP-ID: #{String(experimentNumber).padStart(3, '0')}
           </div>
-          
-          <div>
-            <h3 className="heading-md text-museum-white mb-2">{title}</h3>
-            <p className="body-sm text-museum-muted line-clamp-2">{description}</p>
-          </div>
-          
-          <div className="flex flex-wrap gap-2">
-            {technology.map((tech) => (
-              <span key={tech} className="label-metadata text-museum-dim">
-                {tech}
-              </span>
-            ))}
-          </div>
-          
-          <div className="mt-auto pt-6">
-            <Button variant="primary" className="w-full" onClick={onRun}>
-              RUN EXPERIMENT ?
-            </Button>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-museum-black border border-museum-gold text-museum-gold label-caps tracking-widest uppercase group-hover:bg-museum-surface group-hover:border-museum-gold-bright transition-all duration-200">
+            <span>RUN EXPERIMENT</span>
+            <ArrowRight className="w-4 h-4" />
           </div>
         </div>
-      </div>
+      </Component>
     );
   }
 );
 ExperimentCard.displayName = "ExperimentCard";
-

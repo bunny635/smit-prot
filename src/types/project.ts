@@ -31,8 +31,8 @@ export const ProjectSchema = z.object({
   solutions: z.array(z.string()),
   results: z.string(),
   gallery: z.array(MediaSchema),
-  liveUrl: z.string().url("Invalid Live URL").optional().or(z.literal("")),
-  sourceUrl: z.string().url("Invalid Source URL").optional().or(z.literal("")),
+  liveUrl: z.string().url("Invalid Live URL").refine(val => val.startsWith("http://") || val.startsWith("https://"), { message: "Must use http or https protocol" }).optional().or(z.literal("")),
+  sourceUrl: z.string().url("Invalid Source URL").refine(val => val.startsWith("http://") || val.startsWith("https://"), { message: "Must use http or https protocol" }).optional().or(z.literal("")),
   featured: z.boolean().default(false),
   sortOrder: z.number().default(0),
 });

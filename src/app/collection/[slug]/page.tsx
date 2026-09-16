@@ -8,6 +8,7 @@ import { ArrowRight, Code, ExternalLink, ArrowLeft } from "lucide-react";
 import { MUSEUM_ROUTES } from "@/config/navigation";
 import { ExhibitCard } from "@/components/gallery/ExhibitCard";
 import { ProjectMediaGallery } from "@/components/projects/ProjectMediaGallery";
+import { isValidExternalUrl } from "@/utils/url";
 
 export const dynamicParams = true;
 
@@ -39,6 +40,9 @@ export default async function ProjectCaseStudyPage({ params }: { params: Promise
 
   // Get related projects for the footer (excluding current)
   const relatedProjects = getProjects().filter((pItem) => pItem.id !== project.id).slice(0, 3);
+
+  const hasValidLiveUrl = isValidExternalUrl(project.liveUrl);
+  const hasValidSourceUrl = isValidExternalUrl(project.sourceUrl);
 
   return (
     <div className="relative min-h-[calc(100vh-72px)] w-full overflow-x-hidden bg-museum-black selection:bg-museum-gold selection:text-museum-black">
@@ -294,29 +298,31 @@ export default async function ProjectCaseStudyPage({ params }: { params: Promise
             </div>
             
             <div className="flex flex-wrap items-center gap-4">
-              {project.liveUrl && (
+              {hasValidLiveUrl && (
                 <a 
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Open the live project"
                   className="px-6 py-3 bg-museum-surface border border-museum-gold/50 text-museum-white label-caps tracking-widest uppercase rounded hover:bg-museum-surface-elevated hover:border-museum-gold transition-all duration-200 shadow-sm flex items-center gap-2 focus-ring"
                 >
                   <span>LIVE PROJECT</span>
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
                 </a>
               )}
-              {project.sourceUrl && (
+              {hasValidSourceUrl && (
                 <a 
                   href={project.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="View source code repository"
                   className="px-6 py-3 bg-transparent border border-museum-border text-museum-dim label-caps tracking-widest uppercase rounded hover:border-museum-muted hover:text-museum-white transition-all duration-200 flex items-center gap-2 focus-ring"
                 >
                   <span>VIEW SOURCE</span>
-                  <Code className="w-4 h-4" />
+                  <Code className="w-4 h-4" aria-hidden="true" />
                 </a>
               )}
-              {(!project.liveUrl && !project.sourceUrl) && (
+              {(!hasValidLiveUrl && !hasValidSourceUrl) && (
                 <span className="label-caps text-museum-dim">NO EXTERNAL ACCESSIONS AVAILABLE</span>
               )}
             </div>
